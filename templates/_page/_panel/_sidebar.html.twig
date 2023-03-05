@@ -1,0 +1,62 @@
+<aside id="sidebar" class="sidebar">
+    <ul class="sidebar-nav" id="sidebar-nav">
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="{{ path('home') }}">
+                <i class="bi bi-grid"></i>
+                <span>Pulpit</span>
+            </a>
+        </li>
+        <li class="nav-heading">Administracja</li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#settings-nav" data-bs-toggle="collapse" href="#">
+                    <i class="ri-settings-3-fill"></i><span>Inne</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="settings-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="{{ path('tasks_list') }}">
+                            <i class="bi bi-circle"></i><span>Zadania</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ path('settings') }}">
+                            <i class="bi bi-circle"></i><span>Ustawienia</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ path('files_list') }}">
+                            <i class="bi bi-circle"></i><span>Pliki</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ path('logs_list') }}">
+                            <i class="bi bi-circle"></i><span>Logi</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ path('emailQueue_list') }}">
+                            <i class="bi bi-circle"></i><span>Kolejka email</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ path('emailTemplate_list') }}">
+                            <i class="bi bi-circle"></i><span>Szablony email</span>
+                        </a>
+                    </li>
+                   <li>
+                        <a href="{{ path('smsTemplate_list') }}">
+                            <i class="bi bi-circle"></i><span>Szablony sms</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+    </ul>
+
+    {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
+        <a class="nav-link text-danger h6" href="{{ path('user_list', {'_switch_user': '_exit'}) }}">
+            <i class="bi bi-arrow-left-square-fill" style="color: #ff0000;"></i>
+            <small>Powrót do Admina</small></a>
+    {% endif %}
+
+</aside>

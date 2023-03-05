@@ -1,0 +1,39 @@
+{% extends 'panel.html.twig' %}
+{% set title = 'Kadrowanie zdjęcia profilowego' %}
+{% set header_title = title %}
+{% block stylesheets %} {{ parent() }}
+    {{ block("stylesheets", "_modules/_cropImage.html.twig") }}
+{% endblock %}
+{% block javascripts_bottom %} {{ parent() }}
+    {{ block("javascripts_bottom", "_modules/_cropImage.html.twig") }}
+{% endblock %}
+{% block body %} {{ parent() }}
+
+    <div class="card ">
+        <div class="card-body" align="center">
+            <input type="file" name="upload_image" id="upload_image"/>
+            <br/>
+            <div id="uploaded_image"></div>
+        </div>
+    </div>
+
+    <div id="uploadimageModal" class="modal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Wykadruj zdjęcie</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="image_demo" style="width:350px; margin-top:30px"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Zamknij</button>
+                    <button class="btn btn-success crop_image">Wykadruj i zapisz</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

@@ -1,0 +1,20 @@
+<script>
+    function readMessage(theObject, id = null) {
+
+        $(theObject).click(function (event) {
+            $.ajax({
+                url: "{{ path('messenger_read', {id: '__id__'}) }}".replace("__id__", id),
+                type: "POST",
+                error: function (err) {
+                    console.error("Error: " + err);
+                    console.log(err);
+                },
+                success: function (json) {
+                    console.log('READ DATA CLICK:DONE');
+                    console.log(json)
+                    $('.readDone_' + id).hide();
+                }
+            });
+        });
+    };
+</script>

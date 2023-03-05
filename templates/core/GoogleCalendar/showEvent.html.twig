@@ -1,0 +1,136 @@
+{% extends 'panel.html.twig' %}
+{% block body %} {{ parent() }}
+
+<link href="{{ asset('GoogleCalendar/css/dashboard.css') }}" rel="stylesheet">
+    <link href="{{ asset('GoogleCalendar/css/snackbar.css') }}" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+          crossorigin="anonymous">
+
+
+
+    <div class="container-fluid">
+        <div class="row">
+
+            {% for event in eventsList %}
+
+                <div class="col-md-3">
+                    <div class="card card-01 event-card">
+                        <div class="card-body">
+                        <span class="badge-box">
+                            <i class="fa fa-calendar"></i>
+                        </span>
+                            <h4 class="card-title">
+                                {% if event['summary'] is defined %}
+                                    {{ event['summary']}}
+                                {% endif %}
+                            </h4>
+                            {% if event['created'] is defined %}
+                                <p class="card-text">Created on: <small>{{ event['created']|date("m/d/Y")}}</small></p>
+                            {% endif %}
+                            {% if event['status'] is defined %}
+                                <p class="card-text">Status: <small> {{ event['status'] }}</small></p>
+                            {% endif %}
+                            <u><p class="crad-text"> Start Date Info</p></u>
+                            {% if event['start'] is defined %}
+                                {% for key, value in event['start'] %}
+                                    <p class="card-text">{{ key }}: <small>{{ value|date("m/d/Y") }}</small></p>
+                                {% endfor %}
+                            {% endif %}
+                            <u><p class="crad-text"> End Date Info</p></u>
+                            {% if event['end'] is defined %}
+                                {% for key, value in event['end'] %}
+                                    <p class="card-text">{{ key }}: <small>{{ value|date("m/d/Y") }}</small></p>
+                                {% endfor %}
+                            {% endif %}
+                            <button event-id="{{ event['id']}}" class="delete-event btn btn-center btn-danger">Usuń wydarzenie</button>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            {% if eventsList|length == 0 %}
+                <div class="col-md-12">
+                    <div class="card card-01">
+                        <div class="card-body">
+                            <h4 class="card-title">Brak wydarzeń w tym kalendarzu</h4>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+<div id="snackbar">message..</div>
+    <script>
+    function getUrlParameter(sParam) {
+        var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : sParameterName[1];
+            }
+        }
+    }
+
+    // Display Snackbar
+    function displaySnackbar(message, type, next) {
+        // Get the snackbar DIV
+        var snackbar = document.getElementById('snackbar');
+        switch (type) {
+            case 'success':
+                snackbar.style.backgroundColor = '#59983b';
+                break;
+            case 'error':
+                snackbar.style.backgroundColor = '#dc3545';
+                break;
+
+            default:
+                break;
+        }
+        // Add the "show" class to DIV
+        snackbar.className = 'show';
+        snackbar.innerHTML = message;
+        // After 3 seconds, remove the show class from DIV
+        setTimeout(function() {
+            snackbar.className = snackbar.className.replace('show', '');
+            next();
+        }, 5000);
+    }
+
+    // Send an ajax request to delete event
+    $('.delete-event').on('click', function(e) {
+        // Event details
+        $(this).addClass('loading');
+        var parameters = {
+            operation: 'delete',
+            event_id: $(this).attr('event-id'),
+            calendar_id: getUrlParameter('id') || 'primary',
+        };
+        const self = this;
+        $('.delete-event').attr('disabled', 'disabled');
+        $.ajax({
+            type: 'POST',
+            url: "{{ path('deleteEvent')}}",
+            data: { data: parameters },
+            dataType: 'json',
+            success: function(response) {
+                $(self).removeClass('loading');
+                $(self)
+                    .removeAttr('disabled')
+                    .hide();
+                displaySnackbar('Event ID ' + parameters.event_id + ' deleted', 'success', location.reload());
+            },
+            error: function(response) {
+                $(self).removeClass('loading');
+                $(self).removeAttr('disabled');
+                displaySnackbar(response.responseJSON.message, 'error');
+            },
+        });
+    });
+</script>
+{% endblock %}

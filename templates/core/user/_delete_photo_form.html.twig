@@ -1,0 +1,18 @@
+{% if app.user.userdata.photo is defined and app.user.userdata.photo is not null %}
+    {% set idFiles =  app.user.userdata.photo.id %}
+{% else %}
+    {% set idFiles =  '' %}
+{% endif %}
+<form method="post" id="deletePhoto" action="{{ path('user_deletePhoto', {id:user.userdata.id}) }}" class="{{ delete_photo }}">
+    <input type="hidden" id="idFiles" name="idFiles" value="{{ idFiles }}">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+    <button class="btn btn-danger btn-sm "><i class="bi bi-trash"></i></button>
+</form>
+<script>
+    deleteFile('#deletePhoto');
+</script>
+
+
+
+
+

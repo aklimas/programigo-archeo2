@@ -1,0 +1,49 @@
+{% extends 'panel.html.twig' %}
+
+{% block stylesheets %}{{ parent() }}
+    {{ block("stylesheets", "_modules/_comments.html.twig") }}
+{% endblock %}
+{% block javascripts_bottom %}{{ parent() }}
+    {{ block("javascripts_bottom", "_modules/_comments.html.twig") }}
+
+    <script>
+        $(document).ready(function () {
+            $('div.comment-container').comment({
+                title: 'Liczba komentarzy:',
+                url_get: '{{ path('files_getComments', {id: files.id}) }}',
+                url_input: '{{ path('files_addNewComment', {id: files.id}) }}',
+                url_delete: '{{ path('files_deleteComment', {id: files.id}) }}',
+                limit: 10,
+                auto_refresh: false,
+                refresh: 10000,
+                transition: 'slideToggle',
+            });
+
+        });
+        $('#deleteCommentBtn').click(function () {
+            $.ajax({
+                url: '{{ path('files_deleteComment', {id: files.id}) }}',
+                data: {
+                    id: $('#deleteCommentBtn').attr('data-id'),
+                },
+                type: 'post',
+                success: function (json) {
+                    $('#posted-' + json).remove();
+                }
+            });
+        });
+    </script>
+{% endblock %}
+{% block body %} {{ parent() }}
+    <div class="row">
+        <div class="col-12 col-lg-6">
+            {% include 'other/files/_form.html.twig' %}
+            {% include 'other/files/_delete_form.html.twig' %}
+        </div>
+        <div class="col-12 col-lg-6">{% include "other/files/_content/_comments.html.twig" %}
+            {% include "other/files/_content/_history.html.twig" %}</div>
+    </div>
+
+
+
+{% endblock %}

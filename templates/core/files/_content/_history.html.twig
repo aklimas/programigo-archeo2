@@ -1,0 +1,33 @@
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Historia <span>| Wszystkie wpisy</span></h5>
+        <div class="activity">
+            {% for history in files.histories|reverse %}
+                <div class="activity-item d-flex ">
+                    <div class="activite-label small ">{{ history.date|date('m-d-Y H:i') }}
+                        {% if history.user is not null and is_granted('ROLE_ADMIN') %}
+                            <br>
+                            {% if history.user.isVerified == 'true' %}
+                                <a href="#" class="privmessage" data-id="{{ history.user.id }}"
+                                   data-bs-toggle="modal"
+                                   data-bs-target="#newMessage_modal"
+                                   data-userid="{{ history.user.id }}"
+                                   data-content="Zgłoszenie: {{ files.title }}
+Komentarz z dnia: {{ history.date|date('m-d-Y H:i') }}"
+                                ><strong>{{ history.user.email }}</strong></a>
+                            {% else %}
+                                <br><strong>{{ history.user.email }}</strong>
+                            {% endif %}
+
+
+
+                        {% endif %}</div>
+                    <i class="bi bi-circle-fill activity-badge text-success align-self-start"></i>
+                    <div class="activity-content small">
+                        {{ history.value|raw }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>

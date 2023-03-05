@@ -1,0 +1,417 @@
+{% if app.request.attributes.get('_route') == 'user_profil' %}
+    {% set  extends ='guest.html.twig' %}
+    {% set title = "Mój profil" %}
+    {% set header_title = "Mój profil" %}
+    {% set breadcrumb = [
+        {'none':'Mój profil'},
+    ] %}
+{% else %}
+    {% set  extends ='panel.html.twig' %}
+{% endif %}
+{% extends extends %}
+
+{% block title %}Edycja użytkownika{% endblock %}
+
+{% block stylesheets %} {{ parent() }}
+    {{ block("stylesheets", "_modules/_fileinput.html.twig") }}
+    {{ block("stylesheets", "_modules/_cropImage.html.twig") }}
+
+{% endblock %}
+{% block javascripts_bottom %} {{ parent() }}
+    {{ block("javascripts_bottom", "_modules/_fileinput.html.twig") }}
+    {{ block("javascripts_bottom", "_modules/_cropImage.html.twig") }}
+{% endblock %}
+{% block javascripts_top %} {{ parent() }}
+    <script type="text/javascript">
+        function deleteFile(theObject) {
+            $(theObject).on('submit', function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: $(this).attr('action'),
+                    //data: $(this).serialize(),
+                    data: new FormData(this),
+                    async: true,
+                    type: "post",
+                    contentType: false,
+                    processData: false,
+                    cache: false,
+                    dataType: "json",
+                    beforeSend: function () {
+                    },
+                    error: function (err) {
+                        console.error("Error: " + err);
+                        console.log(err);
+                    },
+                    success: function (json) {
+
+                        console.log(json);
+
+                        $("#photo_form").removeClass('d-none').addClass('d-block').show();
+                        $("#deletePhoto").removeClass('d-block').addClass('d-none').hide();
+                        $("#photo_result").removeClass('d-block').addClass('d-none').hide();
+                        $(".img-profile").attr('src', '/panel/assets/img/emptyProfile.png');
+                    }
+                });
+            });
+        }
+    </script>
+{% endblock %}
+{% block body %}
+    {% if app.request.attributes.get('_route') == 'user_profil' %}
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-lg-3 d-none d-lg-block">
+                {% include "finds/client/_content/_sidebar.html.twig" %}
+            </div>
+            <div class="col-12 col-lg-9">
+                {% endif %}
+                <div class="section profile">
+                    <div class="row">
+                        <div class="col-xl-4">
+
+                            <div class="card mb-2">
+                                <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+
+
+                                    {% if user.userdata.photo is defined and user.userdata.photo != null %}
+                                        {% set src = user.userdata.photo.path ~ user.userdata.photo.name %}
+                                        <img src="{{ src }}" alt="{{ user.userdata.photo.alt }}"
+                                             class="rounded-circle img-profile border  ">
+                                    {% else %}
+                                        <img src="{{ asset('panel/assets/img/emptyProfile.png') }}" alt="Profile"
+                                             class="rounded-circle img-profile border">
+                                    {% endif %}
+
+
+
+                                    {% if user.userData is not null %}
+                                        <h2>{{ user.userData.name }} {{ user.userData.lastname }}</h2>
+                                        <div class="social-links mt-2">
+                                            {% if user.userData.socialFacebook is not null %}
+                                                <a href="{{ user.userData.socialFacebook }}" class="facebook"><i
+                                                            class="bi bi-facebook"></i></a>
+                                            {% endif %}
+
+                                            {% if user.userData.socialInstagram is not null %}
+                                                <a href="{{ user.userData.socialInstagram }}" class="instagram"><i
+                                                            class="bi bi-instagram"></i></a>
+                                            {% endif %}
+
+                                            {% if user.userData.socialTwitter is not null %}
+                                                <a href="{{ user.userData.socialTwitter }}" class="twitter"><i
+                                                            class="bi bi-twitter"></i></a>
+                                            {% endif %}
+
+                                            {% if user.userData.socialLinkedin is not null %}
+                                                <a href="{{ user.userData.socialLinkedin }}" class="linkedin"><i
+                                                            class="bi bi-linkedin"></i></a>
+                                            {% endif %}
+
+                                            {% if user.userData.socialYoutube is not null %}
+                                                <a href="{{ user.userData.socialYoutube }}" class="youtube"><i
+                                                            class="bi bi-youtube"></i></a>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-8">
+
+
+                            <!-- Bordered Tabs -->
+                            <ul class="nav nav-tabs nav-tabs-bordered">
+
+                                <li class="nav-item">
+                                    <button class="nav-link active" data-bs-toggle="tab"
+                                            data-bs-target="#profile-overview">{% trans %}Przegląd{% endtrans %}</button>
+                                </li>
+
+                                <li class="nav-item">
+                                    <button class="nav-link" data-bs-toggle="tab"
+                                            data-bs-target="#profile-edit">{% trans %}Edytuj profil{% endtrans %}</button>
+                                </li>
+                                {% if is_granted('ROLE_ADMIN') and  app.request.attributes.get('_route') != 'user_profil' %}
+                                    <li class="nav-item">
+                                        <button class="nav-link" data-bs-toggle="tab"
+                                                data-bs-target="#email-edit">{% trans %}Ustawienia email{% endtrans %}</button>
+                                    </li>
+                                {% endif %}
+                                <li class="nav-item">
+                                    <button class="nav-link" data-bs-toggle="tab"
+                                            data-bs-target="#profile-change-password">{% trans %}Zmień hasło{% endtrans %}</button>
+                                </li>
+                                {% if is_granted('ROLE_ADMIN') and app.request.attributes.get('_route') != 'user_profil' %}
+                                <li class="nav-item">
+                                    <button class="nav-link" data-bs-toggle="tab"
+                                            data-bs-target="#roles">{% trans %}Role użytkownika{% endtrans %}</button>
+                                </li>
+
+                                    <li class="nav-item">
+                                        {{ include('core/user/_delete_form.html.twig') }}
+                                    </li>
+                                {% endif %}
+
+
+                            </ul>
+                            <div class="tab-content pt-2 border border-top-0 p-3">
+
+                                <div class="tab-pane fade show active profile-overview" id="profile-overview">
+
+                                    {% if user.userData is not null and user.userData.description !="" %}
+                                    <h5 class="card-title">Opis</h5>
+                                    <p class="small fst-italic">{{ user.userData.description }}</p>
+                                    {% endif %}
+
+                                    <h5 class="card-title">Szczegóły profilu</h5>
+
+                                    <div class="row">
+                                        <div class="col-lg-4 col-md-4 label ">Imię i nazwisko</div>
+                                        <div class="col-lg-8 col-md-8">{% if user.userData is not null %}{{ user.userData.name }} {{ user.userData.lastname }}{% endif %}</div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-4 col-md-4 label">Firma</div>
+                                        <div class="col-lg-8 col-md-8">{% if user.userData is not null %}{{ user.userData.company }}{% endif %}</div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-4 col-md-4 label">Adres</div>
+                                        <div class="col-lg-8 col-md-8">{% if user.userData is not null %}{{ user.userData.street }} {{ user.userData.homeNumber }} {{ user.userData.apartmentNumber }} {{ user.userData.postcode }} {{ user.userData.city }}{% endif %}</div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-4 col-md-4 label">Telefon</div>
+                                        <div class="col-lg-8 col-md-8">{% if user.userData is not null %}{{ user.userData.phone }}{% endif %}</div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-4 col-md-4 label">Email</div>
+                                        <div class="col-lg-8 col-md-8">{{ user.email }}</div>
+                                    </div>
+
+                                </div>
+
+                                <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
+
+                                    {% if user.userdata.photo is defined and user.userdata.photo is not null %}
+                                        {% set src = user.userdata.photo.path ~ user.userdata.photo.name %}
+                                        {% set alt =  user.userdata.photo.alt %}
+                                        {% set photo_result = 'd-block' %}
+                                        {% set photo_form = 'd-none' %}
+                                        {% set delete_photo = 'd-block' %}
+                                    {% else %}
+                                        {% set src = '' %}
+                                        {% set alt = '' %}
+                                        {% set photo_result = 'd-none' %}
+                                        {% set photo_form = 'd-block' %}
+                                        {% set delete_photo = 'd-none' %}
+                                    {% endif %}
+                                    <div class="row mb-3">
+                                        <label for="profileImage"
+                                               class="col-md-4 col-lg-3 col-form-label">{% trans %}Zdjęcie profilowe{% endtrans %}</label>
+                                        <div class="col-md-8 col-lg-9">
+
+                                            <img id="photo_result"
+                                                 class="{{ photo_result }} card-img img-account-profile rounded-circle mb-2 img-profile border"
+                                                 src="{{ src }}" alt="">
+
+                                            {% include 'core/user/_delete_photo_form.html.twig' %}
+                                            <div id="photo_form" class="{{ photo_form }}">
+                                                <input type="file" name="upload_image" id="upload_image"/>
+                                                <div id="uploaded_image"></div>
+                                                <div id="uploadimageModal" class="modal" role="dialog">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalLabel">
+                                                                    Wykadruj
+                                                                    zdjęcie</h5>
+                                                                <button type="button" class="btn-close"
+                                                                        data-bs-dismiss="modal"
+                                                                        aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div id="image_demo"
+                                                                     style="width:350px; margin-top:30px"></div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-primary"
+                                                                        data-bs-dismiss="modal">Zamknij
+                                                                </button>
+                                                                <button class="btn btn-success crop_image">
+                                                                    Wykadruj i
+                                                                    zapisz
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--                                        <img id="photo_result"
+                                             class="{{ photo_result }} mx-auto card-img w-75 img-account-profile rounded-circle mb-2"
+                                             src="{{ src }}" alt="">
+                                        <div id="photo_form" class="{{ photo_form }}">
+
+
+
+
+
+                                            {# {{ form(formPhoto, {'attr': {'id': 'photo'}}) }}
+                                            <script>
+                                                save('#photo');
+                                            </script>
+                                            <div class="small font-italic text-muted mb-2">JPG or PNG nie większe niż 5
+                                                MB
+                                            </div> #}
+                                        </div>
+                                        <div class="pt-2">
+                                            {% include 'core/user/_delete_photo_form.html.twig' %}
+                                        </div>-->
+                                        </div>
+                                    </div>
+
+                                    {{ form_start(formData, {'attr': {'id': 'userEdit', 'novalidate': 'novalidate'}}) }}
+                                    <div class="row mb-2">
+                                        <div class="col">
+                                            {{ form_row(formData.description) }}
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col">
+                                            {{ form_row(formData.name) }}
+                                        </div>
+                                        <div class="col">
+                                            {{ form_row(formData.lastName) }}
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-6">
+                                            {{ form_row(formData.phone) }}
+                                        </div>
+                                        <div class="col-6">
+
+                                        </div>
+                                    </div>
+                                    {{ form_row(formData.company) }}
+                                    <div class="row mb-2">
+                                        <div class="col-6">
+                                            {{ form_row(formData.nip) }}
+                                        </div>
+                                        <div class="col-6">
+                                            {{ form_row(formData.regon) }}
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-2">
+                                        <div class="col-6">
+                                            {{ form_row(formData.street) }}
+                                        </div>
+                                        <div class="col-3">
+                                            {{ form_row(formData.homeNumber) }}
+                                        </div>
+                                        <div class="col-3">
+                                            {{ form_row(formData.apartmentNumber) }}
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-3">
+                                            {{ form_row(formData.postcode) }}
+                                        </div>
+                                        <div class="col-9">
+                                            {{ form_row(formData.city) }}
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col">
+                                            {{ form_row(formData.social_Facebook) }}
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col">
+                                            {{ form_row(formData.social_Twitter) }}
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col">
+                                            {{ form_row(formData.social_Linkedin) }}
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col">
+                                            {{ form_row(formData.social_Youtube) }}
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col">
+                                            {{ form_row(formData.social_Instagram) }}
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col">
+                                            {{ form_end(formData) }}
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    <div class="tab-pane fade pt-3" id="email-edit">
+                                        {{ form(formUserEmail) }}
+                                    </div>
+                                {% endif %}
+                                <div class="tab-pane fade pt-3" id="profile-change-password">
+                                    {{ form(formPassword) }}
+                                </div>
+                                <div class="tab-pane fade pt-3" id="roles">
+                                    {{ form_start(form, {'attr': {'id': 'userEdit'}}) }}
+                                    <div class="row">
+                                        <div class="col-12 col-md-6 pe-5 mb-3 mb-md-0">
+                                            Adres email służy jako adres logowania oraz adres korespondencyjny.
+                                        </div>
+                                        <div class="col-12 col-md-6 pe-5">
+                                            {{ form_row(form.email) }}
+                                        </div>
+                                    </div>
+                                    {% if is_granted('ROLE_ADMIN') %}
+                                        <div class="row">
+                                            <div class="col-12 col-md-6 pe-5 mb-3 mb-md-0">
+                                                {{ form_widget(form.isVerified) }}
+                                            </div>
+                                            <div class="col-12 col-md-6 pe-5">
+
+                                                {{ form_widget(form.roles) }}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    <div class="form-group">
+                                        <button type="submit" id="form_save"
+                                                class="save btn btn-primary btn-block mt-4 btn">Zapisz
+                                        </button>
+                                    </div>
+                                    {{ form_end(form) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if app.request.attributes.get('_route') == 'user_profil' %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <script>
+        $(function () {
+            var hash = window.location.hash;
+            hash && $('ul.nav.nav-pills a[href="' + hash + '"]').tab('show');
+            $('ul.nav.nav-pills a').click(function (e) {
+                $(this).tab('show');
+                var scrollmem = $('body').scrollTop();
+                window.location.hash = this.hash;
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends 'blank.html.twig' %}
+{% block body %}
+    <div class="container px-0 mt-4">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-4 d-flex flex-column align-items-center justify-content-center">
+                <div class="info-box aos-init aos-animate text-start w-100">
+                    <div class="card mb-3 mx-0 border-0">
+                        <div class="card-body">
+
+                            <div class="pt-2 pb-2">
+                                <h5 class="card-title text-center pb-0 fs-4">{% trans %}Zaloguj się do swojego konta{% endtrans %}</h5>
+                                <p class="text-center small">{% trans %}Wpisz swój email oraz hasło w celu zalogowania{% endtrans %}</p>
+                            </div>
+
+                            {% if error %}
+                                <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                            {% endif %}
+
+                            <form action="{{ path('app_sign_in') }}"  class="row g-3 needs-validation" novalidate method="post">
+
+                                <div class="col-12">
+                                    <label for="yourUsername"
+                                           class="form-label">{% trans %}Adres E-mail{% endtrans %}</label>
+                                    <div class="input-group has-validation">
+                                        <span class="input-group-text" id="inputGroupPrepend">@</span>
+                                        <input type="text" name="_username" class="form-control" id="yourUsername"
+                                               placeholder="{% trans %}Adres e-mail{% endtrans %}"
+                                               value="{{ last_username }}" required>
+                                        <div class="invalid-feedback">Please enter your username.</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <label for="yourPassword" class="form-label">Hasło</label>
+                                    <input type="password" name="_password" class="form-control"
+                                           id="yourPassword" required>
+                                    <div class="invalid-feedback">Please enter your password!</div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="_remember_me"
+                                               value="true" id="rememberMe">
+                                        <label class="form-check-label"
+                                               for="rememberMe">{% trans %}Zapamiętaj mnie{% endtrans %}</label>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <input type="hidden" name="_csrf_token"
+                                           value="{{ csrf_token('authenticate') }}">
+                                    <button class="btn btn-primary w-100"
+                                            type="submit">{% trans %}Zaloguj{% endtrans %}</button>
+                                </div>
+                                <div class="col-12">
+                                    <p class="small mb-0"><a href="{{ path('app_forgot_password_request') }}">Nie
+                                            pamiętam hasła</a></p>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

@@ -1,0 +1,10 @@
+{% block stylesheets %}
+    <link href="{{ asset('assets/_googleCalendar/css/snackbar.css') }}" rel="stylesheet">
+{% endblock %}
+{% block javascripts_bottom %}
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.1.9/jquery.datetimepicker.min.js"></script>
+    <script src="{{ asset('assets/_googleCalendar/js/dashboard.js') }}"></script>
+{% endblock %}
+{% block javascripts_bottom_create %}
+    <script src="{{ asset('assets/_googleCalendar/js/create.js') }}"></script>
+{% endblock %}

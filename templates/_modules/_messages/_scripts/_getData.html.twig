@@ -1,0 +1,26 @@
+<script>
+    function getData(url) {
+        $.ajax({
+            type: "POST",
+            dataType: 'json',
+            data: '',
+            url: url,
+            async: false, //you won't need that if nothing in your following code is dependend of the result,
+            beforeSend: function (json) {
+                console.log('READ DATA:BEFORE');
+            },
+        })
+            .done(function (response) {
+                console.log('READ DATA:DONE');
+                templateShort = JSON.parse(response.templateShort);
+                templateReceived = JSON.parse(response.templateReceived);
+                templateSent = JSON.parse(response.templateSent);
+                $('.bodyMessageShort').html(templateShort).fadeIn();
+                $('.bodyMessageReceived').html(templateReceived).fadeIn();
+                $('.bodyMessageSent').html(templateSent).fadeIn();
+            })
+            .fail(function (jqXHR, textStatus, errorThrown) {
+                console.log(textStatus + jqXHR + errorThrown);
+            });
+    }
+</script>

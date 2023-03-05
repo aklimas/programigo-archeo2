@@ -1,0 +1,8 @@
+{% set logo = getSetting('favicon', true) %}
+{% if logo is not null %}
+    <link href="{{ asset(logo.path ~ logo.name) }}" rel="icon">
+    <link href="{{ asset(logo.path ~ logo.name) }}" rel="apple-touch-icon">
+{% else %}
+    <link href="assets/img/favicon.png" rel="icon">
+    <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+{% endif %}

@@ -1,0 +1,14 @@
+{% block stylesheets %}
+    <link href="{{ asset('assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+{% endblock %}
+{% block javascripts_bottom %}
+    <script src="{{ asset('assets/vendor/glightbox/js/glightbox.min.js') }}"></script>
+    <script>
+        /**
+         * Initiate portfolio lightbox
+         */
+        const portfolioLightbox = GLightbox({
+            selector: '.lightbox'
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,25 @@
+<a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+    <i class="bi bi-chat-left-text"></i>
+    {% if countNewMessages() > 0 %}
+        <span class="badge bg-success badge-number">{{ countNewMessages() }}</span>
+    {% endif %}
+</a>
+
+<ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
+    <li class="dropdown-header mb-2">
+        Masz {{ countNewMessages() }} nowych wiadomości
+        <a href="{{ path('messenger_list') }}"><span class="badge rounded-pill bg-primary p-2 ms-2">Zobacz wszystkie</span></a>
+    </li>
+    <li>
+        <hr class="dropdown-divider">
+    </li>
+
+    {% for message in getMessages(3) %}
+        {% include "_modules/_messages/_partials/_message.html.twig" %}
+    {% endfor %}
+
+    <li class="dropdown-footer mt-2">
+        <a href="#" class="" data-bs-toggle="modal" data-bs-target="#newMessage_modal">Nowa wiadomość</a>
+    </li>
+
+</ul><!-- End Messages Dropdown Items -->

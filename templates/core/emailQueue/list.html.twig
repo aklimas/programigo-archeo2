@@ -1,0 +1,65 @@
+{% extends 'panel.html.twig' %}
+{% set title = 'Kolejka email' %}
+{% set header_title = title %}
+{% block stylesheets %} {{ parent() }}
+    {{ block("stylesheets", "_modules/_datatables.html.twig") }}
+{% endblock %}
+{% block javascripts_bottom %} {{ parent() }}
+    {{ block("javascripts_bottom", "_modules/_datatables.html.twig") }}
+{% endblock %}
+{% block after_body %} {{ parent() }}
+    {{ block("after_body", "_modules/_preloader.html.twig") }}
+{% endblock %}
+{% block body %} {{ parent() }}
+    {# Paremetry podstaowe Tabeli #}
+    {% set _idTable = "table" %}
+    {% set _classTable = "" %}
+    {% set _searchBottom = true %}
+    {% set _switchUser = false %}
+    {% set _jsonUrl = path('emailQueue_json_list') %}
+    {% set _pageLenght = 10 %}
+    {% set _lastColWidth = '60px' %}
+
+    {# Przyciski #}
+    {% set _ButtonExcel =  true %}
+    {% set _ButtonCopy =  true %}
+    {% set _ButtonCSV =  true %}
+    {% set _ButtonPDF =  true %}
+    {% set _ButtonPrint =  true %}
+    {% set _ButtonColVis =  true %}
+    {% set _exportTitle =  "Emails_" %}
+
+
+    {% set _buttons = [] %}
+
+    {# {% set _buttons = _buttons|merge([
+        {'path' : 'user_edit' , 'content' : "<i class=\"ri-settings-3-fill\"></i>",'class' : "d-inline btn btn-icon btn-sm btn-primary me-2 float-right text-white"},
+    ]) %} #}
+
+    {# dostępne kolumny #}
+    {% set _cols = [
+        {data: "id", title: "ID", width: "30"},
+        {data: 'subject', title: "Tytuł"},
+        {data: 'content', title: "Zawartość"},
+        {data: 'senderEmail', title: "Wysyłający"},
+        {data: 'senderLabel', title: "Wysyłający"},
+        {data: 'recipient', title: "Odbiorca"},
+        {data: 'recipientLabel', title: "Odbiorca"},
+        {data: 'status', title: "Status"},
+        {data: 'type', title: "Typ"},
+        {data: 'template', title: "Szablon"},
+        {data: 'dateSend', title: "Data wysłania"},
+        {data: 'dateCreate', title: "Data stworzenia"}
+
+    ] %}
+    {# ############################################ #}
+
+    {{ block("body", "_modules/_datatables.html.twig") }}
+    {{ block("header", "_modules/_datatables.html.twig") }}
+    <div class="card">
+        <div class="card-body px-2 py-2">
+            {{ block("table", "_modules/_datatables.html.twig") }}
+        </div>
+    </div>
+
+{% endblock %}

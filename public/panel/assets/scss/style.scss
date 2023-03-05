@@ -1,0 +1,22 @@
+@import 'variables';
+
+@import 'general';
+@import 'override';
+
+@import 'header';
+@import 'sidebar';
+@import 'dashboard';
+
+@import 'pages';
+@import 'preloader';
+
+@import 'footer';
+@import 'datatables';
+@import 'combo';
+@import 'calendar';
+@import 'bootstrap-select';
+
+.nav-tabs-bordered {
+  font-size: 12px;
+  font-weight: bold;
+}

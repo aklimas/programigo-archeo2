@@ -1,0 +1,13 @@
+{% block stylesheets %}
+    <link href="{{ asset('assets/_dateTimePicker/bootstrap-datetimepicker.min.css') }}" rel="stylesheet" media="screen">
+    <link href="{{ asset('assets/_dateTimePicker/glyphicon.css') }}" rel="stylesheet" media="screen">
+{% endblock %}
+{% block javascripts_bottom %}
+    <script type="text/javascript" src="{{ asset('assets/_dateTimePicker/bootstrap-datetimepicker.js') }}"
+            charset="UTF-8"></script>
+    <script type="text/javascript" src="{{ asset('assets/_dateTimePicker/locales/bootstrap-datetimepicker.pl.js') }}"
+            charset="UTF-8"></script>
+    <script type="text/javascript" src="{{ asset('assets/_dateTimePicker/datetimepicker.js') }}"
+            charset="UTF-8"></script>
+{% endblock %}
+

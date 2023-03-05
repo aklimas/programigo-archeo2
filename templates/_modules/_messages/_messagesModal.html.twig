@@ -1,0 +1,157 @@
+{% set limit = 3 %}
+{% if app.request.attributes.get('_route') == 'messenger_list' %}
+    {% set limit = null %}
+{% endif %}
+
+
+<div class="modal fade" id="newMessage_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div id="spin_0" class="spin_ position-absolute bg-white w-100 h-100  " style="top: 0;  left: 0; z-index: 999999999">
+            <div class="d-flex align-items-center justify-content-center w-100 h-100">
+                <div class="spinner-border" style="width: 50px; height: 50px;" role="status"> <span class="visually-hidden">Ładowanie...</span> </div>
+            </div>
+        </div>
+        <div class="modal-content">
+            <div class="modal-body">
+                {% set _form =  formMessage().form %}
+                {{ form_start(_form, {'attr': {'id': 'newMessage', 'class':'needs-validation', 'novalidate':'novalidate'}}) }}
+                {{ form_row(_form.userReceipt) }}
+                {{ form_row(_form.content) }}
+                <div class="valid-tooltip">
+                    Wiadomość wysłana!
+                </div>
+                <div class="invalid-tooltip">
+                    Pole obowiązkowe!
+                </div>
+                {{ form_end(_form) }}
+
+                {#{%  include "_modules/_messages/_partials/_success.html.twig" %}#}
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% for message in getMessagesSended(limit) %}
+    <div class="modal fade" id="message_{{ message.id }}" tabindex="-1"
+         aria-labelledby="message_{{ message.id }}_ModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div id="spin_{{ message.id }}" class="spin_ position-absolute bg-white w-100 h-100  " style="top: 0;  left: 0; z-index: 999999999">
+                <div class="d-flex align-items-center justify-content-center w-100 h-100">
+                    <div class="spinner-border" style="width: 50px; height: 50px;" role="status"> <span class="visually-hidden">Ładowanie...</span> </div>
+                </div>
+            </div>
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-2">{{ getProfilePhoto('rounded-circle img-fluid')|raw }}</div>
+                        <div class="col-10">
+                            <div class="w-100">
+                                <h4 class="w-100">{{ message.userSend.userData.getFullName }}
+                                    {% if message.dateReceipt is null %}
+                                        <span  class="readDone_{{ message.id }} badge btn-success float-end">Nieodczytana</span>
+                                    {% endif %}
+                                </h4>
+                                <p>{{ message.content }}</p>
+                                <hr>
+                                {% include "_modules/_messages/_partials/_postDate.html.twig" %}
+                                {% include "_modules/_messages/_partials/_postOfReceipt.html.twig" %}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-body">
+                    <form id="receipt_{{ message.id }}" class="receipt_{{ message.id }} needs-validation" method="post"
+                          action="{{ path('messenger_send', {id: message.id}) }}" novalidate>
+                        <div class="form-floating">
+                            <textarea class="form-control"  placeholder="Odpowiedź" name="content"
+                                      id="floatingTextarea" style="height: 100px;" required></textarea>
+                            <div class="valid-tooltip">
+                                Wiadomość wysłana!
+                            </div>
+                            <div class="invalid-tooltip">
+                                Pole obowiązkowe!
+                            </div>
+                            <label for="floatingTextarea">Odpowiedź</label>
+                        </div>
+                    </form>
+
+                    <script>
+                        $(document).ready(function () {
+                            sendMessage('#receipt_{{ message.id }}', '{{ message.id }}');
+                            //readMessage('.read_{{ message.id }}', '{{ message.id }}');
+                        });
+                    </script>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="receiptSend_{{ message.id }}" form="receipt_{{ message.id }}"
+                            class=" float-start btn btn-sm btn-success">Wyślij
+                    </button>
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+
+{% for message in getMessages(limit) %}
+    <div class="modal fade" id="receiptModal_{{ message.id }}" tabindex="-1" aria-labelledby="message_{{ message.id }}_ModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div id="spin_{{ message.id }}" class="spin_ position-absolute bg-white w-100 h-100  " style="top: 0;  left: 0; z-index: 999999999">
+                <div class="d-flex align-items-center justify-content-center w-100 h-100">
+                    <div class="spinner-border" style="width: 50px; height: 50px;" role="status"> <span class="visually-hidden">Ładowanie...</span> </div>
+                </div>
+            </div>
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="row">
+
+                        <div class="col-2">{{ getProfilePhoto('rounded-circle img-fluid', message.userSend)|raw }}</div>
+                        <div class="col-10">
+                            <div class="w-100">
+                                <h4 class="w-100">{{ message.userSend.userData.getFullName }}
+                                    {% if message.dateReceipt is null %}
+                                        <span  class="readDone_{{ message.id }} badge btn-success float-end">Nowa</span>
+                                    {% endif %}
+                                </h4>
+                                <p>{{ message.content }}</p>
+                                <hr>
+                                {% include "_modules/_messages/_partials/_postDate.html.twig" %}
+                                {% include "_modules/_messages/_partials/_postOfReceipt.html.twig" %}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-body">
+                    <form id="receipt_{{ message.id }}" class="needs-validation" method="post" action="{{ path('messenger_send', {id: message.id}) }}" novalidate>
+                        <div class="form-floating">
+                            <textarea class="form-control" placeholder="Odpowiedź" name="content" id="floatingTextarea" style="height: 100px;" required></textarea>
+                            <div class="valid-tooltip">
+                                Wiadomość wysłana!
+                            </div>
+                            <div class="invalid-tooltip">
+                                Pole obowiązkowe!
+                            </div>
+                            <label for="floatingTextarea">Odpowiedź</label>
+                        </div>
+                    </form>
+                    <script>
+                        $(document).ready(function () {
+                            sendMessage('#receipt_{{ message.id }}', '{{ message.id }}');
+                            readMessage('.read_{{ message.id }}', '{{ message.id }}');
+                        });
+                    </script>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="receiptSend_{{ message.id }}" form="receipt_{{ message.id }}"
+                            class=" float-start btn btn-sm btn-success">Wyślij
+                    </button>
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}

@@ -1,0 +1,44 @@
+<script>
+    function sendMessage(theObject, id = null) {
+        $(".modal .alert").hide();
+        $(theObject + " .spin_ *, " + theObject + " .spin_").hide();
+        $(theObject).on('submit', function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: $(this).attr('action'),
+
+                data: new FormData(this),
+                async: true,
+                type: "post",
+                contentType: false,
+                processData: false,
+                cache: false,
+                dataType: "json",
+                beforeSend: function () {
+                    console.log('SEND DATA:BEORE');
+                    console.log("#spin_" + id);
+                    $("#spin_" + id).show('slow');
+                },
+                error: function (err) {
+                    console.error("Error: " + err);
+                    console.log(err);
+                },
+                success: function (json) {
+                    console.log('SEND DATA:SUCCESS');
+                    getData('{{ path('messagesJson') }}');
+                    if(id == null){
+                        $(theObject +' textarea').val('');
+                        $("#message_" + id).delay(1000).modal("hide");
+                    }else{
+                        $('.receipt_' + id + ' textarea').val('');
+                        $("#message_" + id).delay(1000).modal("hide");
+                        $("#receiptModal_" + id).delay(1000).modal("hide");
+                    }
+                    $('#newMessage_modal').delay(1000).modal("hide");
+                    $("#spin_" + id).hide('slow');
+
+                }
+            })
+        })
+    }
+</script>

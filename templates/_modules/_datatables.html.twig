@@ -1,0 +1,449 @@
+{#
+Wersja: 2.0.0
+Data Modyfikacji: 26.06.2022
+#}
+{% block after_body %}
+{% endblock %}
+{% block stylesheets %}
+{% endblock %}
+{% block javascripts_bottom %}
+    <script type="text/javascript" src="{{ asset('assets/_datatables/js/jquery.dataTables.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/_datatables/js/dataTables.bootstrap5.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/_datatables/js/dataTables.buttons.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/_datatables/js/jszip.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/_datatables/js/pdfmake.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/_datatables/js/vfs_fonts.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/_datatables/js//buttons.html5.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/_datatables/js/buttons.print.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/_datatables/js/buttons.colVis.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/_datatables/js/dataTables.select.min.js') }}"></script>
+    <script>
+        function DeleteFilters(field, type) {
+            if (type == 1) {
+                $('#table').DataTable().search('').draw();
+                $('#table').DataTable().columns().search('').draw();
+                $('input[type=text]').val('');
+
+            }
+        }
+
+    </script>
+{% endblock %}
+{% block body %}
+    {% if _pageLenght is not defined %}{% set _pageLenght = 10 %}{% endif %}
+    {% if _order is not defined %}{% set _order = "[[0, 'asc']]" %}{% endif %}
+    {% if _saveState is not defined %}{% set _saveState = "true" %}{% endif %}
+    {% if _excel is not defined %}{% set _excel = "false" %}{% endif %}
+
+    {% if _exportTitle is not defined %}{% set _excelTitle = "Raport_" %}{% endif %}
+    {% if _ButtonExcel is not defined %}{% set _ButtonExcel =  true %}{% endif %}
+    {% if _ButtonCopy is not defined %}{% set _ButtonCopy =  true %}{% endif %}
+    {% if _ButtonCSV is not defined %}{% set _ButtonCSV =  true %}{% endif %}
+    {% if _ButtonPDF is not defined %}{% set _ButtonPDF =  true %}{% endif %}
+    {% if _ButtonPrint is not defined %}{% set _ButtonPrint =  true %}{% endif %}
+    {% if _ButtonColVis is not defined %}{% set _ButtonColVis =  true %}{% endif %}
+    {% if _ChangeLength is not defined %}{% set _ChangeLength =  true %}{% endif %}
+
+    <script>
+
+
+
+
+        $(document).ready(function () {
+
+
+
+            var cols = [
+                {% if _cols is defined %}
+                {% for col in _cols %}
+                {
+                    {% if col.data is defined %}data: "{{ col.data }}",{% endif %}
+                    {% if col.title is defined %}title: "{{ col.title|raw }}",{% endif %}
+                    {% if col.width is defined %}width: "{{ col.width }}",{% endif %}
+                    {% if col.render is defined %}render: "{{ col.render|raw }}",{% endif %}
+                    {% if col.className is defined %}className: {{ col.className }},{% endif %}
+                    {% if col.ordertable is defined %}orderable: {{ col.ordertable }},{% endif %}
+                    {% if col.defaultContent is defined %}defaultContent: {{ col.defaultContent }},{% endif %}
+                    {% if col.visible is defined %}visible: false,{% endif %}
+                },
+                {% endfor %}
+                {% endif %}
+                {% if _buttons is defined and _buttons is not null %}
+                {data: "action", title: ""},
+                {% endif %}
+            ];
+
+            $('#{{ _idTable }}').on('processing.dt', function (e, settings, processing) {
+                if (!processing) {
+                    $('._preloader').fadeOut(100);
+                }
+            });
+
+
+            $('#{{ _idTable }} tfoot th').each(function () {
+                var title = $(this).text();
+                var index = $(this).index();
+                $(this).html('<input type="text" class="w-100 form-control form-control-sm index' + index + '" placeholder="' + title + '" />');
+            });
+
+            {% set dom = 'Bfrtip' %}
+
+            {% if _ChangeLength == true %}
+            {% set dom = dom ~ 'l' %}
+            {% endif %}
+
+            var d = new Date();
+            var {{ _idTable }} =
+            $('#{{ _idTable }}').dataTable({
+                rowReorder: true,
+                processing: false,
+                deferRender: true,
+                //dom: '<"top">BIplt',
+                dom: '{{ dom }}',
+                pageLength: {{ _pageLenght }},
+                order: {{ _order|raw }},
+                columns: cols,
+                autoWidth: false,
+                select: {
+                    style: 'multi',
+                    //selector: 'td:first-child'
+                },
+
+                columnDefs: [
+                    {% if _buttons is defined and _buttons is not null %}
+                    {
+                        "targets": -1,
+                        "orderable": false,
+                        {% if _lastColWidth is defined %}
+                        width: "{{ _lastColWidth }}",
+                        {% endif %}
+                        data: null,
+                        render: function (data, type, row) {
+                            var html = '';
+                            {% if _buttons is defined %}
+                            {% for button in _buttons %}
+                            var url = '{{ path(button.path, { id : '_id'}) }}';
+                            url = url.replace("_id", row.id);
+                            html += '<a href="' + url + '" class=" d-inline-block {{ button.class }}">{{ button.content|raw }}</a>';
+                            {% endfor %}
+                            {% endif %}
+                            return html;
+                        }
+                    }
+                    {% endif %}
+                ],
+                stateSave: {{ _saveState }},
+                stateLoadParams: function (settings, data) {
+                    for (i = 0; i < data.columns["length"]; i++) {
+                        var col_search_val = data.columns[i].search.search;
+                        if (col_search_val != "") {
+                            $("#{{ _idTable }} tfoot th input.index" + i).val(col_search_val);
+                        }
+                    }
+                },
+                fixedHeader: {
+                    header: true,
+                    footer: true
+                },
+                ajax: '{{ _jsonUrl }}',
+                language: {
+                    "processing": "Przetwarzanie...",
+                    "search": "",
+                    "searchPlaceholder": "Szukaj",
+                    "lengthMenu": "Pokaż _MENU_ pozycji",
+                    "info": "Pozycje od _START_ do _END_ z _TOTAL_ łącznie",
+                    "infoEmpty": "Pozycji 0 z 0 dostępnych",
+                    "infoFiltered": "(filtrowanie spośród _MAX_ dostępnych pozycji)",
+                    "loadingRecords": "Wczytywanie...",
+                    "zeroRecords": "Nie znaleziono pasujących pozycji",
+                    "emptyTable": "Brak danych",
+                    "paginate": {
+                        "first": "Pierwsza",
+                        "previous": "Poprzednia",
+                        "next": "Następna",
+                        "last": "Ostatnia"
+                    },
+                    buttons: {
+                        colvis: '{% trans %}Wybór kolumn{% endtrans %}',
+                        print: '{% trans %}Drukuj{% endtrans %}',
+                        copy: '{% trans %}Kopiuj{% endtrans %}',
+                        selectAll: "{% trans %}Zaznacz wszystkie{% endtrans %}",
+                        selectNone: "{% trans %}Odznacz wszystkie{% endtrans %}"
+                    },
+                    "aria": {
+                        "sortAscending": ": aktywuj, by posortować kolumnę rosnąco",
+                        "sortDescending": ": aktywuj, by posortować kolumnę malejąco"
+                    },
+                },
+
+                'aoColumnDefs': [{
+                    'bSortable': false,
+                    'aTargets': ['nosort']
+                }],
+
+                buttons: [
+                    {% if _ButtonExcel == true %}
+                    {
+                        extend: 'excelHtml5',
+                        exportOptions: {
+                            columns: ':visible',
+                            stripHtml: true,
+                            format: {
+                                body: function (data, row, column, node) {
+                                    data = $('<p>' + data + '</p>').text();
+                                    return $.isNumeric(data.replace(',', '.')) ? data.replace(',', '.') : data;
+                                }
+                            }
+                        },
+                        text: 'Excel',
+                        title: '{{ _exportTitle }}' + d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear() + "-" +
+                            d.getHours() + ":" + d.getMinutes(),
+                        titleAttr: '{% trans %}Exportuj do Excel{% endtrans %}',
+                        attr: {
+                            'class': 'badge btn btn-success',
+                            'data-bs-toggle': 'tooltip',
+                            'data-bs-placement': 'bottom'
+                        },
+                    },
+                    {% endif %}
+                    {% if _ButtonCopy == true %}
+                    {
+                        extend: 'copy',
+                        exportOptions: {
+                            columns: ':visible',
+
+                        },
+                        text: 'Kopiuj',
+                        title: '{{ _exportTitle }}' + d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear() + "-" +
+                            d.getHours() + ":" + d.getMinutes(),
+                        titleAttr: '{% trans %}Kopiuj{% endtrans %}',
+                        attr: {
+                            'class': 'badge btn btn-success',
+                            'data-bs-toggle': 'tooltip',
+                            'data-bs-placement': 'bottom'
+                        },
+                    },
+                    {% endif %}
+                    {% if _ButtonCSV == true %}
+                    {
+                        extend: 'csvHtml5',
+                        exportOptions: {
+                            columns: ':visible',
+
+                        },
+                        text: 'CSV',
+                        title: '{{ _exportTitle }}' + d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear() + "-" +
+                            d.getHours() + ":" + d.getMinutes(),
+                        titleAttr: '{% trans %}Exportuj do CSV{% endtrans %}',
+                        attr: {
+                            'class': 'badge btn btn-success',
+                            'data-bs-toggle': 'tooltip',
+                            'data-bs-placement': 'bottom'
+                        },
+
+
+                    },
+                    {% endif %}
+                    {% if _ButtonPDF == true %}
+                    {
+                        extend: 'pdfHtml5',
+                        attr: {
+                            'class': 'badge btn btn-success'
+                        },
+                        orientation: 'landscape',
+                        pageSize: 'LEGAL',
+                        exportOptions: {
+                            columns: ':visible',
+                            stripHtml: true
+                        },
+                        text: 'PDF',
+                        title: '{{ _exportTitle }}' + d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear() + "-" +
+                            d.getHours() + ":" + d.getMinutes(),
+                        titleAttr: '{% trans %}Export do PDF{% endtrans %}',
+                        customize: function (doc) {
+                            doc.styles.title.fontSize = 8;
+                            doc.defaultStyle.fontSize = 6;
+                            doc.styles.tableHeader.fontSize = 6;
+                            doc.styles.tableFooter.fontSize = 6;
+                        },
+
+                    },
+                    {% endif %}
+                    {% if _ButtonPrint == true %}
+                    {
+                        extend: 'print',
+                        exportOptions: {
+                            columns: ':visible'
+                        },
+                        text: '{% trans %}Drukuj{% endtrans %}',
+                        title: '{{ _exportTitle }}' + d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear() + "-" +
+                            d.getHours() + ":" + d.getMinutes(),
+                        titleAttr: '{% trans %}Drukuj{% endtrans %}',
+                        attr: {
+                            'class': 'badge btn btn-success',
+                            'data-bs-toggle': 'tooltip',
+                            'data-bs-placement': 'bottom'
+                        },
+                    },
+                    {% endif %}
+
+                    {% if _ButtonColVis == true %}
+                    {
+                        extend: 'colvis',
+                        text: '{% trans %}Wybierz kolumny{% endtrans %}',
+                        columns: ':not(.noVis)',
+                        titleAttr: '{% trans %}Wybierz kolumny, które mają się pojawić w tabeli{% endtrans %}',
+                        lumns: ':not(.never)',
+                        columnText: function (dt, idx, title) {
+                            return (idx + 1) + ': ' + title;
+                        },
+                        attr: {
+                            'class': 'badge btn btn-success',
+                            'data-bs-toggle': 'tooltip',
+                            'data-bs-placement': 'bottom'
+                        },
+                    },
+                    {% endif %}
+
+                    {
+                        extend: 'selectAll',
+                        titleAttr: '{% trans %}Zaznacz wszystkie pozycje{% endtrans %}',
+                        attr: {
+                            'class': 'badge btn btn-success',
+                            'data-bs-toggle': 'tooltip',
+                            'data-bs-placement': 'bottom'
+                        },
+                    },
+                    {
+                        extend: 'selectNone',
+                        titleAttr: '{% trans %}Odznacz wszystkie pozycje{% endtrans %}',
+                        attr: {
+                            'class': 'badge btn btn-success',
+                            'data-bs-toggle': 'tooltip',
+                            'data-bs-placement': 'bottom'
+                        },
+                    },
+
+                    {
+                        text: '{% trans %}Wyczyść filtry{% endtrans %}',
+                        titleAttr: '{% trans %}Wyczyść wszystkie filtry w tabeli / Wyszukiwarka / Ustawienia{% endtrans %}',
+                        attr: {
+                            'class': 'badge btn btn-danger',
+                            'data-toggle': 'modal',
+                            'data-target': '#basked',
+                            'onclick': "DeleteFilters('dataSearch', 1)"
+                        }
+                    },
+                ],
+                initComplete: function () {
+
+                    this.api().columns().every(function () {
+                        var that = this;
+                        $('input', this.footer()).on('keyup change clear', function () {
+                            if (that.search() !== this.value) {
+                                that
+                                    .search(this.value)
+                                    .draw();
+                            }
+                        });
+                    });
+
+                    $('#{{ _idTable }}_wrapper .dataTables_paginate').appendTo('#_{{ _idTable }} .dt-pagination');
+                    $('#{{ _idTable }}_wrapper .dataTables_length').appendTo('#_{{ _idTable }} .dt-lenght');
+                    $('#{{ _idTable }}_wrapper .dataTables_filter').appendTo('#_{{ _idTable }} .dt-search');
+                    $('#{{ _idTable }} .dataTables_info').appendTo('#_{{ _idTable }} .dt-info');
+                    $('#{{ _idTable }}_wrapper .dt-buttons').appendTo('#__{{ _idTable }} #custom-buttons');
+                    $('#{{ _idTable }}_wrapper .dataTables_info').appendTo('#_{{ _idTable }} .dt-info');
+
+                    //
+
+                    //$('.dt-info').appendTo('#custom-info');
+
+                    /*
+
+                    $('#{{ _idTable }}_wrapper .dt-lenght select').addClass('custom-select custom-select-sm form-control form-control-sm');
+
+                    $('#{{ _idTable }}_wrapper .dt-info').appendTo('#_{{ _idTable }} .dt-info');
+
+                    $('#{{ _idTable }}_wrapper .dt-buttons').appendTo('#_{{ _idTable }} .dt-buttons');*/
+
+
+                    let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+                    let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                        return new bootstrap.Tooltip(tooltipTriggerEl)
+                    })
+
+                }
+
+            });
+
+            //console.log({{ _idTable }});
+
+            {# {{ _idTable }}.
+            on('draw', function () {
+                console.log('Redraw occurred at');
+            });
+            #}
+
+        });
+
+        $('#content').hover(function () {
+            let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            })
+        });
+
+    </script>
+{% endblock %}
+{% block header %}
+    <div class="card  mb-3 " id="_{{ _idTable }}" style="z-index: 99;">
+        <div class="card-body row py-lg-2 px-lg-2">
+            <div class="col-12 col-lg-auto dt-pagination"></div>
+            <div class="col-12 col-lg-auto dt-search"></div>
+            <div class="col-12 col-lg-auto dt-lenght text-nowrap"></div>
+        </div>
+    </div>
+{% endblock %}
+{% block table %}
+    <div class="table-responsive">
+    <table class="table table-hover table-striped" id="{{ _idTable }}">
+        <style>
+            th, td {
+                white-space: nowrap;
+            }
+        </style>
+        <thead class="{{ _classTable }}">
+        <tr>
+            {% for col in _cols %}
+                <th>{{ col.title }}</th>
+            {% endfor %}
+            {% if _buttons is defined and _buttons is not null %}
+                <th></th>
+            {% endif %}
+        </tr>
+        </thead>
+        {% if _searchBottom == true %}
+            <tfoot class="{{ _classTable }}">
+            <tr>
+                {% for col in _cols %}
+                    <th>{{ col.title }}</th>
+                {% endfor %}
+                {% if _buttons is defined and _buttons is not null %}
+                    <th></th>
+                {% endif %}
+            </tr>
+            </tfoot>
+        {% endif %}
+    </table>
+    </div>
+    <div class="row" id="__{{ _idTable }}">
+        <div class="col">
+            <small><span class="dt-info pt-3"></span></small>
+        </div>
+        <div class="col-auto">
+            <div id="custom-buttons">
+            </div>
+        </div>
+    </div>
+{% endblock %}

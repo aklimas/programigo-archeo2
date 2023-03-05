@@ -1,0 +1,14 @@
+{% extends 'panel.html.twig' %}
+{% set title = 'EmailTemplate - Statusy - edycja' %}
+{% set header_title = title %}
+{% block stylesheets %} {{ parent() }}
+    {{ block("stylesheets", "_modules/_colorPicker.html.twig") }}
+{% endblock %}
+{% block javascripts_bottom %} {{ parent() }}
+    {{ block("javascripts_bottom", "_modules/_colorPicker.html.twig") }}
+{% endblock %}
+{% block body %} {{ parent() }}
+    {{ include('core/emailTemplate/status/_form.html.twig', {'button_label': 'Zaaktualizuj'}) }}
+    {{ include('core/emailTemplate/status/_delete_form.html.twig') }}
+    <a href="{{ path('emailTemplateStatusVariants_list', {id: emailTemplate_status.id}) }}">Zależności</a>
+{% endblock %}

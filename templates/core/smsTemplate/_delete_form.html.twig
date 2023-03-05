@@ -1,0 +1,4 @@
+<form method="post" action="{{ path('smsTemplate_delete', {'id': smsTemplate.id}) }}" onsubmit="return confirm('Czy jesteś pewny, że chcesz usunąć wpis?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ smsTemplate.id) }}">
+    <button class="btn btn-sm btn-danger">{% trans %}Usuń{% endtrans %}</button>
+</form>

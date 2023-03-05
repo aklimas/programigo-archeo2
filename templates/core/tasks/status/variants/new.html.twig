@@ -1,0 +1,10 @@
+{% extends 'panel.html.twig' %}
+{% set title = 'Tasks - Statusy - nowy' %}
+{% set header_title = title %}
+{% block stylesheets %} {{ parent() }}
+{% endblock %}
+{% block javascripts_bottom %} {{ parent() }}
+{% endblock %}
+{% block body %} {{ parent() }}
+    {{ include('tasks/status/_form.html.twig') }}
+{% endblock %}

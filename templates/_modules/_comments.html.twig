@@ -1,0 +1,39 @@
+{% block stylesheets %}
+    <link href="{{ asset('assets/_comments/css/jquery-ui.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/_comments/css/style.css') }}" rel="stylesheet">
+    <link rel=stylesheet href="{{ asset('assets/_comments/css/jquery.comment.css') }}">
+{% endblock %}
+{% block javascripts_bottom %}
+    <script src="{{ asset('assets/_comments/js/jquery.timeago.js') }}"></script>
+    <script src="{{ asset('assets/_comments/js/jquery.autogrow-textarea.js') }}"></script>
+    <script src="{{ asset('assets/_comments/js/jquery.comment.js') }}"></script>
+{% endblock %}
+{% block body %}
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Komentarze</h5>
+            <div class="comment-container"></div>
+        </div>
+    </div>
+
+
+{% endblock %}
+{% block modal %}
+    <div class="modal fade" tabindex="-1" role="dialog" id="deleteCommentModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Czy na pewno chcesz usunąć komentarz?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-danger" id="deleteCommentBtn" data-id='' data-bs-dismiss="modal">
+                        Tak, usuń
+                    </button>
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Nie usuwaj</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

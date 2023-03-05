@@ -1,0 +1,11 @@
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Pliki</h5>
+        <ul class="list-group">
+            {% for file in files %}
+                <li class="list-group-item"><a href="{{ file.fullPath }}">{{ file.name }}</a>
+                    <a href="{{ path('companies_deleteFile', {id: file.id}) }}" class="btn float-end btn-danger badge">Usuń</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>

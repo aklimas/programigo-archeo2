@@ -1,0 +1,129 @@
+<div class="pagetitle row ">
+    <div class="col-12 col-lg-auto d-none d-lg-block">
+        {% if header_title is defined and header_title != "" %} <h1>{{ header_title }}</h1> {% endif %}
+    </div>
+    <div class="col-12 col-lg ">
+        <div class="row justify-content-between">
+            <div class="col-12 col-lg-auto px-0 px-lg-4">
+                <nav>
+                    {% if breadcrumb is defined %}
+                        <ol class="breadcrumb mt-1">
+                            <li><a href="{{ path('home') }}" class="me-2"><i class="ri-home-2-fill"></i></a></li>
+                            {% for name in breadcrumb %}
+                                {% for key, value in name %}
+                                    {% if key != 'params' %}
+                                        <li class="breadcrumb-item {% if key == "none" %} active "
+                                            aria-current="page {% endif %}">
+                                            {% if key!= 'none' and key!= 'params' %}
+                                                {% if name.params is defined %}
+                                                    <a href="{{ path(key , name.params) }}"> {{ value }}</a>
+                                                {% else %}
+                                                    <a href="{{ path(key) }}"> {{ value }}</a>
+                                                {% endif %}
+                                            {% else %}
+                                                {% if name[key] is not iterable %}
+                                                    {{ name[key] }}
+                                                {% endif %}
+                                            {% endif %}
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                        </ol>
+                    {% endif %}
+                </nav>
+            </div>
+            <div class="col-12 col-lg-auto px-0 px-lg-4">
+                {% if buttons is defined %}
+                    {% for button in buttons %}
+
+                        {% if button.button_quest is defined %}
+                            {% set quest = "return confirm('"~ button.button_quest ~ "');" %}
+                        {% else %}
+                            {% set quest = '' %}
+                        {% endif %}
+
+                        {% if button.button_class is not defined %}
+                            {% set button_class = 'btn-primary' %}
+                        {% else %}
+                            {% set button_class = button.button_class %}
+                        {% endif %}
+                        {% if button.button_icon is not defined %}
+                            {% set button_icon = 'fa-arrow-left' %}
+                        {% else %}
+                            {% set button_icon = button.button_icon %}
+                        {% endif %}
+                        {% if button.button_param is defined %}
+                            {% for key,value in button.button_param %}
+                                {% set params = { (key): value } %}
+                                <a href="{{ path(button.button_link, params) }}"
+                                   class="btn {{ button_class }} btn-sm shadow-sm text-white" onclick="{{ quest|raw }}"><i
+                                            class="fas fa-sm {{ button_icon }}"></i> <span
+                                            class="d-inline-block d-lg-none">
+                                {% if button.button_mobile_title is defined %}
+                                    {{ button.button_mobile_title|raw }}
+                                {% else %}
+                                    {{ button.button_title|raw }}
+                                {% endif %}
+                                    </span>
+                                    <span class="d-none d-lg-inline-block">
+                                        {{ button.button_title|raw }}
+                                </span></a>
+                            {% endfor %}
+                        {% elseif button.button_modal is defined %}
+                            <a href="#" data-toggle="modal" onclick="{{ quest|raw }}"
+                               data-target="{{ button.button_modal }}"
+                               class="btn {{ button_class }} btn-sm shadow-sm text-white"><i
+                                        class="fas fa-sm {{ button_icon }}"></i> <span class="d-inline-block d-lg-none">
+                                {% if button.button_mobile_title is defined %}
+                                    {{ button.button_mobile_title|raw }}
+                                {% else %}
+                                    {{ button.button_title|raw }}
+                                {% endif %}
+                                    </span>
+                                <span class="d-none d-lg-inline-block">
+                                        {{ button.button_title|raw }}
+                                </span></a>
+                        {% elseif button.button_submit is defined %}
+                            <button type="submit" form="{{ button.button_submit }}"
+                                    class="btn {{ button_class }} btn-sm shadow-sm text-white"
+                                    onclick="{{ quest|raw }}"><i
+                                        class="fas fa-sm {{ button_icon }}"></i>
+                                <span class="d-inline-block d-lg-none mob">
+                                {% if button.button_mobile_title is defined %}
+                                    {{ button.button_mobile_title|raw }}
+                                {% else %}
+                                    {{ button.button_title|raw }}
+                                {% endif %}
+                                    </span>
+                                <span class="d-none d-lg-inline-block">
+                                        {{ button.button_title|raw }}
+                                </span></button>
+
+                        {% else %}
+                            <a href="{{ path(button.button_link) }}"
+                               class="btn {{ button_class }} btn-sm shadow-sm text-white" onclick="{{ quest|raw }}"><i
+                                        class="fas fa-sm {{ button_icon }}"></i>
+                                <span class="d-inline-block d-lg-none mob">
+                                {% if button.button_mobile_title is defined %}
+                                    {{ button.button_mobile_title }}
+                                {% else %}
+                                    {{ button.button_title }}
+                                {% endif %}
+                                    </span>
+                                <span class="d-none d-lg-inline-block">
+                                        {{ button.button_title }}
+                                </span>
+
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+

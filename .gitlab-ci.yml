@@ -1,0 +1,36 @@
+image: bogkonstantin/php-7.4-node-12-debug:latest
+
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  only:
+    - master
+  artifacts:
+    paths:
+      - ./
+  script:
+    - export APP_ENV=prod
+    - composer install --no-dev --optimize-autoloader
+    - yarn install
+    - yarn encore production
+    - rm -r node_modules
+    - mkdir -p var && chmod -R 777 var
+
+deploy:
+  stage: deploy
+  only:
+    - master
+  before_script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" >> ~/.ssh/config'
+  script:
+    - zip -r $CI_COMMIT_SHA.zip .
+    - scp -p $CI_COMMIT_SHA.zip $SSH_USER@$SSH_HOST:/var/www/$PROJECT_FOLDER/
+    - ssh $SSH_USER@$SSH_HOST "cd  /var/www/$PROJECT_FOLDER/ && unzip -q $CI_COMMIT_SHA.zip -d $CI_COMMIT_SHA && rm $CI_COMMIT_SHA.zip && cp .env.local $CI_COMMIT_SHA/ && ln -sfn $CI_COMMIT_SHA current && exit"

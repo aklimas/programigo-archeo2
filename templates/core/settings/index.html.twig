@@ -1,0 +1,83 @@
+{% extends 'panel.html.twig' %}
+{% set title = 'Ustawienia' %}
+{% set header_title = title %}
+
+{% block stylesheets %} {{ parent() }}
+    {{ block("stylesheets", "_modules/_fileinput.html.twig") }}
+{% endblock %}
+{% block javascripts_bottom %} {{ parent() }}
+    {{ block("javascripts_bottom", "_modules/_fileinput.html.twig") }}
+{% endblock %}
+{% block body %}
+    <div class="container-fluid">
+        {{ form_start(form, {'attr': {'id': 'settingForm'}}) }}
+
+        <div class="card">
+            <div class="card-body">
+                <!-- Bordered Tabs -->
+                <ul class="nav nav-tabs nav-tabs-bordered" id="borderedTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="home-tab" data-bs-toggle="tab"
+                                data-bs-target="#panel-default" type="button" role="tab" aria-controls="default"
+                                aria-selected="true">Ustawienia podstawowe
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="graphic-tab" data-bs-toggle="tab"
+                                data-bs-target="#panel-graphic" type="button" role="tab" aria-controls="default"
+                                aria-selected="true">Ustawienia graficzne
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="api-tab" data-bs-toggle="tab"
+                                data-bs-target="#panel-api" type="button" role="tab" aria-controls="default"
+                                aria-selected="true">API
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#bordered-other"
+                                type="button" role="tab" aria-controls="other" aria-selected="false">Reszta
+                        </button>
+                    </li>
+                </ul>
+                <div class="tab-content pt-2" id="borderedTabContent">
+                    <div class="tab-pane fade show active" id="panel-default" role="tabpanel"
+                         aria-labelledby="home-tab">
+                        <div class="row">
+                            <div class="col-12 col-lg-4">
+                                <h5 class="card-title">Ustawienia globalne</h5>
+                                {{ form_row(form.pageTitle) }}
+                            </div>
+                            <div class="col-12 col-lg-4">
+                                <h5 class="card-title">Rejestracja</h5>
+                                {{ form_row(form.serviceType) }}
+                                {{ form_row(form.accept1) }}
+                            </div>
+                            <div class="col-12 col-lg-4">
+                                <h5 class="card-title">Stopka Email</h5>
+                                {{ form_row(form.emailFooter) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="panel-graphic" role="tabpanel" aria-labelledby="graphic-tab">
+
+                        <div class="row">
+                            <div class="col-12 col-lg-4">
+                                <h5 class="card-title">Grafika strony</h5>
+                                {% include "core/settings/_content/_file.html.twig" with {fieldName : 'logo'} %}
+                                {% include "core/settings/_content/_file.html.twig" with {fieldName : 'favicon', size : '48'} %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="bordered-other" role="tabpanel" aria-labelledby="profile-tab">
+                        {{ form_end(form) }}
+                    </div>
+                </div><!-- End Bordered Tabs -->
+
+            </div>
+        </div>
+
+        <input type="submit" value="Zapisz" form="settingForm" class="btn btn-primary">
+    </div>
+
+{% endblock %}

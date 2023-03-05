@@ -1,0 +1,144 @@
+{% extends 'panel.html.twig' %}
+{% block body %} {{ parent() }}
+    <div class="row">
+        <div class="col-12 col-lg-6">
+            <div class="list-group">
+                {% for calendar in calendarLists %}
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">{{ calendar['summary'] }}</h5>
+                        </div>
+                        <small class="text-muted">Id: {{ calendar['id'] }}</small><br>
+                        {# <br>
+                            <small class="text-muted">Timezone: <small>{{ calendar['timeZone'] }}</small></small><br> #}
+                        <a href="{{ path('createEvent', {id: calendar['id']}) }}"
+                           class="btn badge btn-primary btn-sm create-event-btn  mb-1">Utwórz wydarzenie</a>
+                        <a href="{{ path('showEvent', {id: calendar['id']}) }}"
+                           class="btn badge btn-info btn-sm view-event-btn  mb-1">Podgląd wydarzeń</a>
+                        <a data-calendar-id="{{ calendar['id'] }}"
+                           class="btn badge btn-danger btn-sm delete-calendar-btn  mb-1">Usuń kalendarz</a>
+
+                    </div>
+                {% endfor %}
+
+                {% if calendarLists|length == 0 %}
+
+                    <div class="col-md-12">
+                        <div class="card card-01">
+                            <div class="card-body">
+                                <h4 class="card-title">Aktualnie nie posiadasz żadnego kalendarza</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="modal fade" id="createModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">Utwórz nowy kalendarz</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="calendarInputTItle1">Title</label>
+                            <input type="text" class="form-control" id="calendar_summary" aria-describedby="emailHelp"
+                                   placeholder="Calendar Title">
+                        </div>
+                        <div class="form-group">
+                            <label for="calendar_description">Description</label>
+                            <textarea class="form-control" id="calendar_description" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+                    <button type="button" data-operation="create-calendar" class="btn btn-primary save-calendar">
+                        Zapisz
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div><!-- End Vertically centered Modal-->
+
+    <div id="snackbar">message..</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
+            integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+            crossorigin="anonymous"></script>
+
+    <script>
+        // Send Ajax Request to create new calendar
+        $('.save-calendar').on('click', function () {
+            $(this).addClass('loading');
+            var blank_reg_exp = /^([\s]{0,}[^\s]{1,}[\s]{0,}){1,}$/,
+                error = 0,
+                parameters;
+
+            $('.input-error').removeClass('input-error');
+
+            if (!blank_reg_exp.test($('#calendar_summary').val())) {
+                $('#calendar_summary').addClass('input-error');
+                error = 1;
+            }
+            if (!blank_reg_exp.test($('#calendar_description').val())) {
+                $('#calendar_description').addClass('input-error');
+                error = 1;
+            }
+            if (error == 1) return false;
+            parameters = {
+                summary: $('#calendar_summary').val(),
+                description: $('#calendar_description').val(),
+                operation: $(this).attr('data-operation'),
+            };
+            $.ajax({
+                type: 'POST',
+                url: "{{ path('createDashboard') }}",
+                data: {data: parameters},
+                dataType: 'json',
+                success: function (response) {
+                    // close the modal if successfull
+                    $(this).removeClass('loading');
+                    $('#createModal').modal('hide');
+                    displaySnackbar('Calendar was created successfully', 'success', location.reload());
+                },
+                error: function (response) {
+                    // close the modal if an error occur then display the messages to the user
+                    $(this).removeClass('loading');
+                    displaySnackbar(json_decode(response), 'error');
+                    // alert(response.responseJSON.message);
+                },
+            });
+        });
+        // Send Ajax Request to Delete Event
+        $('.delete-calendar-btn').on('click', function (e) {
+            $(this).addClass('loading');
+            // Event details
+            var parameters = {
+                calendar_id: $(this).attr('data-calendar-id'),
+            };
+            console.log('parameters', parameters);
+            $.ajax({
+                type: 'POST',
+                url: "{{ path('deleteDashboard') }}",
+                data: {data: parameters},
+                dataType: 'json',
+                success: function (response) {
+                    $(this).removeClass('loading');
+                    displaySnackbar('Calendar was deleted successfully', 'success', location.reload);
+                },
+                error: function (response) {
+                    $(this).removeClass('loading');
+                    alert(response.responseJSON.message);
+                },
+            });
+        });
+    </script>
+{% endblock %}

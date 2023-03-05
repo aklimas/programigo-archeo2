@@ -1,0 +1,12 @@
+{% extends 'panel.html.twig' %}
+{% set title = 'SmsTemplate - Statusy - nowy' %}
+{% set header_title = title %}
+{% block stylesheets %} {{ parent() }}
+    {{ block("stylesheets", "_modules/_colorPicker.html.twig") }}
+{% endblock %}
+{% block javascripts_bottom %} {{ parent() }}
+    {{ block("javascripts_bottom", "_modules/_colorPicker.html.twig") }}
+{% endblock %}
+{% block body %} {{ parent() }}
+    {{ include('smsTemplate/status/_form.html.twig') }}
+{% endblock %}

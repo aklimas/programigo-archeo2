@@ -1,0 +1,3 @@
+{% for message in getMessagesSended() %}
+    {% include "core/messenger/_content/_message.html.twig" with  {'type' : 'sent'} %}
+{% endfor %}

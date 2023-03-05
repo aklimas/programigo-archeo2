@@ -1,0 +1,69 @@
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/_cropImage/css/croppie.css') }}">
+
+{% endblock %}
+{% block javascripts_bottom %}
+
+
+    <script src="{{ asset('assets/_cropImage/js/croppie.js') }}" type="text/javascript"></script>
+
+
+    <script>
+        $(document).ready(function () {
+
+            $image_crop = $('#image_demo').croppie({
+                enableExif: true,
+                viewport: {
+                    width: 200,
+                    height: 200,
+                    type: 'circle' //circle , square
+                },
+                boundary: {
+                    width: 300,
+                    height: 300
+                }
+            });
+
+            $('#upload_image').on('change', function () {
+                var reader = new FileReader();
+                reader.onload = function (event) {
+                    $image_crop.croppie('bind', {
+                        url: event.target.result
+                    }).then(function () {
+                        console.log('jQuery bind complete');
+                    });
+                }
+                reader.readAsDataURL(this.files[0]);
+                $('#uploadimageModal').modal('show');
+            });
+
+            $('.crop_image').click(function (event) {
+                $image_crop.croppie('result', {
+                    type: 'canvas',
+                    size: 'viewport',
+                    circle: true
+                }).then(function (response) {
+                    $.ajax({
+                        url: "{{ path('user_edit', {id: app.user.id}) }}",
+                        type: "POST",
+                        data: {"image": response},
+                        success: function (data) {
+
+                            console.log(data);
+
+                            $('#uploadimageModal').modal('hide');
+                            //$('#uploaded_image').html(data);
+                            $("#idFiles").val(data.id);
+                            $("#photo_form").removeClass('d-block').addClass('d-none').hide();
+                            $("#deletePhoto").removeClass('d-none').addClass('d-block').show();
+                            $("#photo_result").attr('src', data.path + data.name).removeClass('d-none').addClass('d-block').show();
+                            $("#img-profile").attr('src', data.path + data.name);
+                            $(".img-profile").attr('src', data.path + data.name);
+                        }
+                    });
+                })
+            });
+
+        });
+    </script>
+{% endblock %}

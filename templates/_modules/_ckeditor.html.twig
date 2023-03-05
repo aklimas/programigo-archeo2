@@ -1,0 +1,33 @@
+{% block stylesheets %}
+{% endblock %}
+{% block javascripts_top %}
+    <script src="{{ asset('/assets/_ckeditor/ckeditor.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('/assets/_ckeditor/pl.js') }}" type="text/javascript"></script>
+
+    <script>
+        ClassicEditor.create( document.querySelector( '.ckeditor ' ), {language: 'pl'/* toolbar: [ 'heading', '|', 'bold', 'italic', 'link' ] */} ).then( editor => {window.editor = editor;} ).catch( err => {console.error( err.stack );} );
+        ClassicEditor.create( document.querySelector( '.ckeditor_add_krk ' ), {language: 'pl'/* toolbar: [ 'heading', '|', 'bold', 'italic', 'link' ] */} ).then( editor => {window.editor = editor;} ).catch( err => {console.error( err.stack );} );
+        ClassicEditor.create( document.querySelector( '.ckeditor_info_krk ' ), {language: 'pl'/* toolbar: [ 'heading', '|', 'bold', 'italic', 'link' ] */} ).then( editor => {window.editor = editor;} ).catch( err => {console.error( err.stack );} );
+        ClassicEditor.create( document.querySelector( '.ckeditor_add_diploma ' ), {language: 'pl'/* toolbar: [ 'heading', '|', 'bold', 'italic', 'link' ] */} ).then( editor => {window.editor = editor;} ).catch( err => {console.error( err.stack );} );
+        ClassicEditor.create( document.querySelector( '.ckeditor_contract_pdf ' ), {language: 'pl'/* toolbar: [ 'heading', '|', 'bold', 'italic', 'link' ] */} ).then( editor => {window.editor = editor;} ).catch( err => {console.error( err.stack );} );
+        ClassicEditor.create( document.querySelector( '.ckeditor_desc_short ' ), {language: 'pl'/* toolbar: [ 'heading', '|', 'bold', 'italic', 'link' ] */} ).then( editor => {window.editor = editor;} ).catch( err => {console.error( err.stack );} );
+        ClassicEditor.create( document.querySelector( '.ckeditor_desc_long ' ), {language: 'pl'/* toolbar: [ 'heading', '|', 'bold', 'italic', 'link' ] */} ).then( editor => {window.editor = editor;} ).catch( err => {console.error( err.stack );} );
+        ClassicEditor.create( document.querySelector( '.ckeditor_add_contract ' ), {language: 'pl'/* toolbar: [ 'heading', '|', 'bold', 'italic', 'link' ] */} ).then( editor => {window.editor = editor;} ).catch( err => {console.error( err.stack );} );
+    </script>
+{% endblock %}
+{% block javascripts_bottom %}
+    <script src="{{ asset('/assets/_ckeditor/ckeditor.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('/assets/_ckeditor/pl.js') }}" type="text/javascript"></script>
+
+    <script>
+        ClassicEditor.create( document.querySelector( '.ckeditor ' ), {language: 'pl'/* toolbar: [ 'heading', '|', 'bold', 'italic', 'link' ] */} ).then( editor => {window.editor = editor;} ).catch( err => {console.error( err.stack );} );
+        ClassicEditor.create( document.querySelector( '.ckeditor_add_krk ' ), {language: 'pl'/* toolbar: [ 'heading', '|', 'bold', 'italic', 'link' ] */} ).then( editor => {window.editor = editor;} ).catch( err => {console.error( err.stack );} );
+        ClassicEditor.create( document.querySelector( '.ckeditor_info_krk ' ), {language: 'pl'/* toolbar: [ 'heading', '|', 'bold', 'italic', 'link' ] */} ).then( editor => {window.editor = editor;} ).catch( err => {console.error( err.stack );} );
+        ClassicEditor.create( document.querySelector( '.ckeditor_add_diploma ' ), {language: 'pl'/* toolbar: [ 'heading', '|', 'bold', 'italic', 'link' ] */} ).then( editor => {window.editor = editor;} ).catch( err => {console.error( err.stack );} );
+        ClassicEditor.create( document.querySelector( '.ckeditor_contract_pdf ' ), {language: 'pl'/* toolbar: [ 'heading', '|', 'bold', 'italic', 'link' ] */} ).then( editor => {window.editor = editor;} ).catch( err => {console.error( err.stack );} );
+        ClassicEditor.create( document.querySelector( '.ckeditor_desc_short ' ), {language: 'pl'/* toolbar: [ 'heading', '|', 'bold', 'italic', 'link' ] */} ).then( editor => {window.editor = editor;} ).catch( err => {console.error( err.stack );} );
+        ClassicEditor.create( document.querySelector( '.ckeditor_desc_long ' ), {language: 'pl'/* toolbar: [ 'heading', '|', 'bold', 'italic', 'link' ] */} ).then( editor => {window.editor = editor;} ).catch( err => {console.error( err.stack );} );
+        ClassicEditor.create( document.querySelector( '.ckeditor_add_contract ' ), {language: 'pl'/* toolbar: [ 'heading', '|', 'bold', 'italic', 'link' ] */} ).then( editor => {window.editor = editor;} ).catch( err => {console.error( err.stack );} );
+    </script>
+{% endblock %}
+

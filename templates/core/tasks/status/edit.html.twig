@@ -1,0 +1,14 @@
+{% extends 'panel.html.twig' %}
+{% set title = 'Tasks - Statusy - edycja' %}
+{% set header_title = title %}
+{% block stylesheets %} {{ parent() }}
+    {{ block("stylesheets", "_modules/_colorPicker.html.twig") }}
+{% endblock %}
+{% block javascripts_bottom %} {{ parent() }}
+    {{ block("javascripts_bottom", "_modules/_colorPicker.html.twig") }}
+{% endblock %}
+{% block body %} {{ parent() }}
+    {{ include('tasks/status/_form.html.twig', {'button_label': 'Zaaktualizuj'}) }}
+    {{ include('tasks/status/_delete_form.html.twig') }}
+    <a href="{{ path('tasksStatusVariants_list', {id: tasks_status.id}) }}">Zależności</a>
+{% endblock %}

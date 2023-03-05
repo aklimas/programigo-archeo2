@@ -1,0 +1,49 @@
+<a class="list-group-item list-group-item-action">
+    <div class=" read_{{ message.id }}" data-bs-toggle="modal"
+            {% if type is defined and type == 'sent' %}
+         data-bs-target="#smessage_{{ message.id }}">
+        {% else %}
+            data-bs-target="#message_{{ message.id }}">
+        {% endif %}
+        <div class="row">
+            <div class="col-1">
+
+                {% if type is defined and type == 'sent' %}
+                    {{ getProfilePhoto('rounded-circle img-fluid', message.userReceipt)|raw }}
+                {% else %}
+                    {{ getProfilePhoto('rounded-circle img-fluid', message.userSend)|raw }}
+                {% endif %}
+
+
+            </div>
+            <div class="col-11">
+                <div class="w-100">
+                    <h5 class="card-title py-1">
+                        {% if type is defined and type == 'sent' %}
+                            {% if message.userReceipt.userData is defined %}
+                                {{ message.userReceipt.userData.getFullName }}
+                            {% endif %}
+                        {% else %}
+                            {% if message.userSend.userData is defined %}
+                                {{ message.userSend.userData.getFullName }}
+                            {% endif %}
+                        {% endif %}
+
+
+                        <span>|
+                            {% include "_modules/_messages/_partials/_postDate.html.twig" %}
+                            {% include "_modules/_messages/_partials/_postOfReceipt.html.twig" %}
+                                                </span>
+                        {% if type is defined and type == 'sent' %}
+                            {% include "_modules/_messages/_partials/_checkIsNew.html.twig" with { 'type' : type } %}
+                        {% else %}
+                            {% include "_modules/_messages/_partials/_checkIsNew.html.twig"  %}
+                        {% endif %}
+                        {% include "_modules/_messages/_partials/_checkReceipt.html.twig" %}
+                    </h5>
+                    <p>{{ wordWrap(message.content, 50) }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</a>

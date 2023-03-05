@@ -1,0 +1,10 @@
+{% extends 'panel.html.twig' %}
+{% block stylesheets %} {{ parent() }}
+    {{ block("stylesheets", "_modules/_colorPicker.html.twig") }}
+{% endblock %}
+{% block javascripts_bottom %} {{ parent() }}
+    {{ block("javascripts_bottom", "_modules/_colorPicker.html.twig") }}
+{% endblock %}
+{% block body %} {{ parent() }}
+    {{ include('other/settlement/status/_form.html.twig') }}
+{% endblock %}

@@ -1,0 +1,47 @@
+{% if upload is defined %}
+    <button type="button" class="btn btn-primary btn-sm float-right" data-toggle="modal"
+            data-target="#uploadFiles"><i class="fa fa-plus"></i> Dodaj pliki
+    </button>
+
+    <div class="modal fade" id="uploadFiles" tabindex="-1" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Dodawanie plików</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{ form_start(upload, {'attr': {'id': 'uploadDocument', 'novalidate': 'novalidate'}}) }}
+                    <input type="hidden" name="_parent" value="insuranceDOC">
+                    {{ form_row(upload.file) }}
+                    <input type="submit" class="btn btn-primary btn-sm mt-2" value="Zapisz">
+                    {{ form_end(upload) }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">
+                        Zamknij
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <code class="float-right">Brak formularza "Upload"</code>
+{% endif %}
+
+{#
+Instrukcja
+
+{% block stylesheets %} {{ parent() }}
+    {{ block("stylesheets", "_elements/fileinput.html.twig") }}
+{% endblock %}
+
+{% block javascripts_top %} {{ parent() }}
+    {{ block("javascripts_top", "_elements/fileinput.html.twig") }}
+{% endblock %}
+
+
+ #}

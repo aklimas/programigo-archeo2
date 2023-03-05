@@ -1,0 +1,21 @@
+<li class="message-item">
+    <a class="read_{{ message.id }}" data-bs-toggle="modal" data-bs-target="#receiptModal_{{ message.id }}">
+        {{ getProfilePhoto('rounded-circle', message.userSend)|raw }}
+        <div class="w-100">
+            <h4 class="w-100">
+                {% if message.userSend.userData is defined %}
+                    {{ message.userSend.userData.getFullName }}
+                {% endif %}
+                {% include "_modules/_messages/_partials/_checkIsNew.html.twig" %}
+                {% include "_modules/_messages/_partials/_checkReceipt.html.twig" %}
+            </h4>
+            <p>{{ wordWrap(message.content, 50) }}</p>
+            <hr class="my-1">
+            {% include "_modules/_messages/_partials/_postDate.html.twig" %}
+            {% include "_modules/_messages/_partials/_postOfReceipt.html.twig" %}
+        </div>
+    </a>
+</li>
+<li>
+    <hr class="dropdown-divider">
+</li>

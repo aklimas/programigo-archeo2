@@ -1,0 +1,69 @@
+{% if block('javascripts_top') is not defined %}{% block javascripts_top %}{% endblock %}{% endif %}
+{% if block('stylesheets') is not defined %}{% block stylesheets %}{% endblock %}{% endif %}
+{% if block('javascripts_bottom') is not defined %}{% block javascripts_bottom %}{% endblock %}{% endif %}
+{% if block('after_body') is not defined %}{% block after_body %}{% endblock %}{% endif %}
+
+
+
+{% include '_page/_core/_header.html.twig' with {
+    javascripts_top: block('javascripts_top'),
+    stylesheets: block('stylesheets'),
+    after_body: block('after_body'),
+    stylesheetsUrl: '_page/_panel/_styles.html.twig',
+} %}
+<style>
+.logo img {
+    max-height: 64px;
+    margin-right: 6px;
+}</style>
+{% include '_page/_panel/_top.html.twig' %}
+{% include '_page/_panel/_sidebar.html.twig' %}
+<main id="main" class="main position-relative dashboard">
+    {% if app.request.get('_route') != 'panel' %}
+        {% include '_page/_panel/_breadcrumb.html.twig' %}
+    {% endif %}
+    {% include "_page/_core/_messages.html.twig" %}
+
+    <script>
+
+    </script>
+
+    {% include "_modules/_messages/_scripts/_getData.html.twig" %}
+    {% include "_modules/_messages/_scripts/_sendMessage.html.twig" %}
+    {% include "_modules/_messages/_scripts/_readMessage.html.twig" %}
+
+
+    {% block body %}{% endblock %}
+
+
+    <script>
+
+        $(document).ready(function () {
+            $(".spin_").hide();
+            getData('{{ path('messagesJson') }}');
+            sendMessage('#newMessage', 0);
+            //sendMessage('#newMessage3');
+
+            $('#newMessage_modal').on('show.bs.modal', function (event) {
+                let userId = $(event.relatedTarget).data('userid')
+                let content = $(event.relatedTarget).data('content')
+                //$(this).find('.modal-body input#new_message_userReceipt').val(userId)
+                $(".modal-body select").val(userId).change();
+                $(".modal-body textarea").val(content).change();
+            })
+
+        });
+
+
+    </script>
+</main>
+
+{% include '_page/_core/_footer.html.twig' with {
+    javascripts_bottom: block('javascripts_bottom'),
+    footerUrl: '_page/_panel/_footer.html.twig',
+    javascriptsUrl: '_page/_panel/_scripts.html.twig',
+} %}
+
+{% include "_page/_content/_logoutModal.html.twig" %}
+
+

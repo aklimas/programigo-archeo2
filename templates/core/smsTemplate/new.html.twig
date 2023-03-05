@@ -1,0 +1,8 @@
+{% extends 'panel.html.twig' %}
+{% block stylesheets %} {{ parent() }}
+{% endblock %}
+{% block javascripts_bottom %} {{ parent() }}
+{% endblock %}
+{% block body %} {{ parent() }}
+    {{ include('smsTemplate/_form.html.twig') }}
+{% endblock %}

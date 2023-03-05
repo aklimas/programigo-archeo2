@@ -1,0 +1,36 @@
+{% extends 'panel.html.twig' %}
+{% block javascripts_bottom %} {{ parent() }}
+    {{ block("javascripts_bottom", "_modules/_combo.html.twig") }}
+{% endblock %}
+{% block body %}
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Skrzynka wiadomości</h5>
+                    <div class="bodyMessageReceived"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Nowa wiadomość</h5>
+                    {{ form_start(formMessage) }}
+                    {% include "_partials/_spiner.html.twig" %}
+                    {{ form_end(formMessage) }}
+                </div>
+            </div>
+
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Skrzynka wiadomości wysłanych</h5>
+                    <div class="bodyMessageSent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+

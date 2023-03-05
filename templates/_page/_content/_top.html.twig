@@ -1,0 +1,67 @@
+
+<!-- ======= Top Bar ======= -->
+<section id="topbar" class="d-flex align-items-center">
+    <div class="container d-flex justify-content-center justify-content-md-between">
+        <div class="contact-info d-flex align-items-center">
+            <i class="bi bi-envelope-fill"></i><a href="mailto:contact@example.com">info@example.com</a>
+            <i class="bi bi-phone-fill phone-icon"></i> +1 5589 55488 55
+        </div>
+        <div class="social-links d-none d-md-block">
+            <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
+            <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
+            <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
+            <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
+        </div>
+    </div>
+</section>
+
+<!-- ======= Header ======= -->
+<header id="header" class="d-flex align-items-center">
+    <div class="container d-flex align-items-center justify-content-between">
+
+        <!-- <h1 class="logo"><a href="index.html">Day</a></h1> -->
+        <!-- Uncomment below if you prefer to use an image logo -->
+        <a href="{{ path('home') }}" class="logo">
+            {%  set logo = getSetting('logo', true) %}
+            {% if logo is not null %}
+                <img src="{{ asset(logo.path ~ logo.name) }}" alt="" class="img-fluid">
+            {% else %}
+                Logo
+            {% endif %}
+        </a>
+
+        <nav id="navbar" class="navbar">
+            <ul>
+                <li><a class="nav-link scrollto active" href="#hero">Dla kogo?</a></li>
+                <li class="dropdown"><a href="#"><span>Funkcje</span> <i class="bi bi-chevron-down"></i></a>
+                    <ul>
+                        <li><a href="#">Funkcja 1</a></li>
+                        <li><a href="#">Funkcja 2</a></li>
+                        <li><a href="#">Funkcja 3</a></li>
+                        <li><a href="#">Funkcja 4</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown"><a href="#"><span>Kategorie</span> <i class="bi bi-chevron-down"></i></a>
+                    <ul>
+                        <li><a href="#">Kategoria 1</a></li>
+                        <li><a href="#">Kategoria 2</a></li>
+                        <li><a href="#">Kategoria 3</a></li>
+                        <li><a href="#">Kategoria 4</a></li>
+                    </ul>
+                </li>
+                <li><a class="nav-link scrollto" href="#services">Wiedza</a></li>
+                <li><a class="nav-link scrollto " href="#portfolio">Cennik</a></li>
+                <li><a class="nav-link scrollto" href="#pricing">Kontakt</a></li>
+                {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                    {% include "_page/_content/_top/_profile.html.twig" %}
+                {% else %}
+                    <li><a class="nav-link scrollto active" href="{{ path('app_login') }}">Logowanie</a></li>
+                    <li><a class="nav-link scrollto active" href="{{ path('app_register') }}">Załóż konto</a></li>
+                {% endif %}
+
+            </ul>
+            <i class="bi bi-list mobile-nav-toggle"></i>
+        </nav><!-- .navbar -->
+
+    </div>
+</header><!-- End Header -->

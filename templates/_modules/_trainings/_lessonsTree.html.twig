@@ -1,0 +1,122 @@
+<script>
+    function saveCategory(theObject) {
+        $(theObject).on('submit', function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: $(this).attr('action'),
+                //data: $(this).serialize(),
+                data: new FormData(this),
+                async: true,
+                type: "post",
+                contentType: false,
+                processData: false,
+                cache: false,
+                dataType: "json",
+                beforeSend: function () {
+                },
+                error: function (err) {
+                    // console.error("Error: " + err);
+                    console.log(err);
+                },
+                success: function (json) {
+                    console.log(json);
+                    refreshLessonsList();
+                    /*$("#idFiles").val(json.id);
+                    $("#photo_form").removeClass('d-block').addClass('d-none').hide();
+                    $("#deletePhoto").removeClass('d-none').addClass('d-block').show();
+                    $("#photo_result").attr('src', json.path + json.name).removeClass('d-none').addClass('d-block').show();
+                    $("#img-profile").attr('src', json.path + json.name);*/
+                }
+            });
+        });
+    }
+
+</script>
+<section>
+
+    <div class="dd" id="{{ IDname }}">
+        <button class="dd-new-item">+</button>
+        <li class="dd-item-blueprint">
+            <button class="collapse" data-action="collapse" type="button" style="display: none;">–</button>
+            <button class="expand" data-action="expand" type="button" style="display: none;">+</button>
+            <div class="dd-handle dd3-handle">&nbsp;</div>
+            <div class="dd3-content">
+                <span class="item-name">[item_name][item_id]</span>
+                <div class="dd-button-container">
+                    <button class="item-add">+</button>
+                    <button class="item-remove" data-confirm-class="item-remove-confirm">&times;</button>
+                </div>
+                <div class="dd-edit-box" style="display: none;">
+                    <input type="text" name="title" autocomplete="off" placeholder="Item"
+                           data-placeholder="Any nice idea for the title?"
+                           data-default-value="Lekcja {?numeric.increment}">
+                    <a href="">Edytuj</a>
+                    <i class="end-edit">Zapisz</i>
+
+                </div>
+            </div>
+        </li>
+        <ol class="dd-list"></ol>
+    </div>
+    <div id="{{ IDname }}-output" class="output-preview-container">
+
+        {% if route_params is not null %}
+        <form method="post" id="menu" action="{{ path(route_save,route_params ) }}">
+        {% else %}
+        <form method="post" id="menu" action="{{ path(route_save) }}">
+        {% endif %}
+
+
+            <input name="jsonOutput" type="hidden" class="jsonOutput"></input>
+          <!--  <input style="" type="button" name="clearLocalStorage" class="clearLocalStorage btn btn-outline-primary" value="Wczytaj ponownie z bazy">-->
+            <input type="submit" class="btn btn-primary" value="Zapisz">
+        </form>
+        <script>
+            saveCategory('#menu');
+        </script>
+    </div>
+</section>
+
+<script>
+    $(document).ready(function() {
+        var $domenu            = $('#{{ IDname }}'),
+            domenu             = $('#{{ IDname }}').domenu(),
+            $outputContainer   = $('#{{ IDname }}-output'),
+            $jsonOutput        = $outputContainer.find('.jsonOutput'),
+            $keepChanges       = $outputContainer.find('.keepChanges'),
+            $clearLocalStorage = $outputContainer.find('.clearLocalStorage');
+
+        $('#{{ IDname }}').domenu({
+            slideAnimationDuration: 0,
+            allowListMerging: ['domenu-1'],
+            data: window.localStorage.getItem('{{ IDname }}Json') || '{{ json|raw }}',
+            maxDepth:               {{ depth }},
+        })
+            .parseJson()
+            .on(['onItemCollapsed', 'onItemExpanded', 'onItemAdded', 'onSaveEditBoxInput', 'onItemDrop', 'onItemDrag', 'onItemRemoved', 'onItemEndEdit'], function(a, b, c) {
+                $jsonOutput.val(domenu.toJson());
+                if($keepChanges.is(':checked')) window.localStorage.setItem('{{ IDname }}Json', domenu.toJson());
+            })
+            .onToJson(function() {
+                if(window.localStorage.length) $clearLocalStorage.show();
+            });
+
+        $clearLocalStorage.click(function() {
+            window.localStorage.clear();
+            if(!window.localStorage.length) $clearLocalStorage.hide();
+            // Part of the reset demo routine
+            window.location.reload();
+        });
+
+        // Init textarea
+        $jsonOutput.val(domenu.toJson());
+        $keepChanges.on('click', function() {
+            if(!$keepChanges.is(':checked')) window.localStorage.setItem('{{ IDname }}KeepChanges', false);
+            if($keepChanges.is(':checked')) window.localStorage.setItem('{{ IDname }}KeepChanges', true);
+        });
+
+        if(window.localStorage.getItem('{{ IDname }}KeepChanges') === "false") $keepChanges.attr('checked', false);
+    });
+</script>
+
+

@@ -1,0 +1,6 @@
+<li class="dropdown"><a href="#"><span>Moje konto</span> <i class="bi bi-chevron-down"></i></a>
+    <ul>
+        <li><a href="{{ path("user_edit", { 'id': app.user.id }) }}">Ustawienia <i class="ri-settings-3-fill"></i> </a></li>
+        <li><a href="{{ path("app_logout") }}">Wyloguj <i class="ri-login-box-line"></i> </a></li>
+    </ul>
+</li>

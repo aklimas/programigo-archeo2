@@ -1,0 +1,44 @@
+<!-- ======= Breadcrumbs ======= -->
+<section id="breadcrumbs" class="breadcrumbs">
+    <div class="container">
+
+        {# PHP [nazwa routa => tytuł routa, parametry]
+'breadcrumb' => [
+    ['meetingsList' => 'Wydarzenia'],
+    ['meetingDetails' => $meeting->getName(), 'params' => ['shortName' => $shortName]],
+    ['none' => 'Dodawanie samochodu']
+],
+        #}
+
+        {% if breadcrumb is defined %}
+                <ol>
+                    <li ><a href="{{ path('home') }}"><i class="ri-home-2-fill"></i></a></li>
+                    {% for name in breadcrumb %}
+                        {% for key, value in name %}
+                            {% if key != 'params' %}
+                                <li class="breadcrumb-item {% if key == "none" %} active "
+                                    aria-current="page {% endif %}">
+                                    {% if key!= 'none' and key!= 'params' %}
+                                        {% if name.params is defined %}
+                                            <a href="{{ path(key , name.params) }}">{{ value }}</a>
+                                        {% else %}
+                                            <a href="{{ path(key) }}">{{ value }}</a>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if name[key] is not iterable %}
+                                            {{ name[key] }}
+                                        {% endif %}
+                                    {% endif %}
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                </ol>
+        {% endif %}
+
+        {% if header_title is defined and header_title != "" %} <h2>{{ header_title }}</h2> {% endif %}
+
+    </div>
+</section><!-- End Breadcrumbs -->
+
+

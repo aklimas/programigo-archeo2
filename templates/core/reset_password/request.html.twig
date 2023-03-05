@@ -1,0 +1,24 @@
+{% extends 'blank.html.twig' %}
+{% block body %}
+    <div class="container px-0 mt-4">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-4 d-flex flex-column align-items-center justify-content-center">
+                {% for flashError in app.flashes('reset_password_error') %}
+                    <div class="alert alert-danger" role="alert">{{ flashError }}</div>
+                {% endfor %}
+                <div class="info-box aos-init aos-animate text-start w-100">
+                    <div class="card mb-3 mx-0 border-0">
+                        <article class="card-body">
+                            <h4 class="card-title mb-4 mt-1">Resetuj hasło</h4>
+                            {{ form_start(requestForm) }}
+                            {{ form_row(requestForm.email, {'help' : 'Wpisz swój adres e-mail, a my wyślemy Ci link do resetowania hasła.'}) }}
+
+                            <button class="btn btn-primary mt-4">Wyślij link do odzyskiwania hasła</button>
+                            {{ form_end(requestForm) }}
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

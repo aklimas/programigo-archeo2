@@ -1,0 +1,31 @@
+{% extends 'panel.html.twig' %}
+{% block stylesheets %} {{ parent() }}
+    {{ block("stylesheets", "_modules/_googleCalendar.html.twig") }}
+{% endblock %}
+{% block javascripts_bottom %} {{ parent() }}
+    {{ block("javascripts_bottom", "_modules/_googleCalendar.html.twig") }}
+{% endblock %}
+{% block body %} {{ parent() }}
+
+    <div class="container-fluid">
+        <div class="d-flex align-items-center flex-column justify-content-center h-100 text-black">
+            <img src="http://awesomelytechie.com/wp-content/uploads/2014/11/google-calendar-logo.jpg"/>
+            <h6 class="mt-5 mb-5 text-center" style="width:40%">
+                This application explores the Google Calendar API,
+                providing users with functionalities that helps you manage your Google Calendar.
+                such as
+                <ul class="text-left mt-4 mb-4">
+                    <li>creating a new calendar,</li>
+                    <li>deleting a calendar,</li>
+                    <li>creating events for a specific calendar,</li>
+                    <li>view all lists of events from a specific calendar,</li>
+                    <li>deleting events from calendar and</li>
+                    <li>also updating calendar events</li>
+                </ul>
+                . This application is built with PHP(7.0),
+                it currently does not utilize any library/framework.
+            </h6>
+            <a id="logo" class="btn btn-danger" href="{{ login_url }}">Login with Google</a>
+        </div>
+    </div>
+{% endblock %}

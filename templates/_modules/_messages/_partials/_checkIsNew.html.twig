@@ -1,0 +1,9 @@
+{% if message.dateReceipt is null  %}
+    <span  class="readDone_{{ message.id }} badge btn btn-success float-end text-white" >
+        {% if type is defined and type == 'sent' %}
+            Nieodczytana
+        {% else %}
+            Nowa
+        {% endif %}
+    </span>
+{% endif %}

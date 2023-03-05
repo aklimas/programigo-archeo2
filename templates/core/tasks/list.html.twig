@@ -1,0 +1,52 @@
+{% extends 'panel.html.twig' %}
+{% block stylesheets %} {{ parent() }}
+    {{ block("stylesheets", "_modules/_datatables.html.twig") }}
+{% endblock %}
+{% block javascripts_bottom %} {{ parent() }}
+    {{ block("javascripts_bottom", "_modules/_datatables.html.twig") }}
+{% endblock %}
+
+{% block after_body %} {{ parent() }}
+    {{ block("after_body", "_modules/_preloader.html.twig") }}
+{% endblock %}
+{% block body %} {{ parent() }}
+
+    {# Paremetry podstaowe Tabeli #}
+    {% set _idTable = "table" %}
+    {% set _classTable = "" %}
+    {% set _searchBottom = true %}
+    {% set _jsonUrl = path('tasks_jsonList') %}
+    {% set _pageLenght = 10 %}
+    {% set _lastColWidth = '60px' %}
+
+    {# Przyciski #}
+    {% set _ButtonExcel =  true %}
+    {% set _ButtonCopy =  true %}
+    {% set _ButtonCSV =  true %}
+    {% set _ButtonPDF =  true %}
+    {% set _ButtonPrint =  true %}
+    {% set _ButtonColVis =  true %}
+    {% set _exportTitle =  "Users_" %}
+
+
+
+    {# dostępne kolumny #}
+    {% set _cols = [
+        {data: "id", title: "#", width: "30"},
+        {data: "title", title: "Tytuł" },
+        {data: "status", title: "Status" },
+        {data: "dateAdd", title: "Data dodania" },
+        {data: "dateModify", title: "Data modyfikacji" },
+        {data: "actions", title: "Akcje" , width: "140"},
+    ] %}
+    {# ############################################ #}
+
+    {{ block("body", "_modules/_datatables.html.twig") }}
+    {{ block("header", "_modules/_datatables.html.twig") }}
+    <div class="card">
+        <div class="card-body px-2 py-2">
+            {{ block("table", "_modules/_datatables.html.twig") }}
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'blank.html.twig' %}
+{% block body %}
+    <div class="container px-0 mt-4">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-4 d-flex flex-column align-items-center justify-content-center">
+                <div class="info-box aos-init aos-animate text-start w-100">
+                    <div class="card border-0">
+                        <article class="card-body">
+                            <h4 class="card-title mb-4 mt-1">Resetuj hasło</h4>
+                            <p>Jeśli istnieje konto pasujące do Twojego adresu e-mail, oznacza to, że właśnie wysłano wiadomość e-mail zawierającą link, którego możesz użyć do zresetowania hasła.
+                                Ten link wygaśnie za {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}</p>
+                            <p>Jeśli nie otrzymasz wiadomości e-mail, sprawdź folder ze spamem lub <a href="{{ path('app_forgot_password_request') }}"> spróbuj ponownie</a>.</p>
+
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% if block('javascripts_top') is not defined %}{% block javascripts_top %}{% endblock %}{% endif %}
+{% if block('stylesheets') is not defined %}{% block stylesheets %}{% endblock %}{% endif %}
+{% if block('javascripts_bottom') is not defined %}{% block javascripts_bottom %}{% endblock %}{% endif %}
+{% if block('after_body') is not defined %}{% block after_body %}{% endblock %}{% endif %}
+{% include '_page/_core/_header.html.twig' with {
+    javascripts_top: block('javascripts_top'),
+    stylesheets: block('stylesheets'),
+    stylesheetsUrl: '_page/_panel/_styles.html.twig',
+    after_body: block('after_body'),
+} %}
+<main>
+    {% include "_page/_core/_messages.html.twig" %}
+    {% block body %}{% endblock %}
+</main>
+{% include '_page/_core/_footer.html.twig' with {
+    javascripts_bottom: block('javascripts_bottom'),
+    footerUrl: '_page/_panel/_footerBlank.html.twig',
+    javascriptsUrl: '_page/_panel/_scripts.html.twig',
+} %}

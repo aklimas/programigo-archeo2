@@ -1,0 +1,23 @@
+{% extends 'panel.html.twig' %}
+{% set title = 'Lista użytkowników' %}
+{% set header_title = title %}
+{% block body %}
+
+    <div class="row">
+        <div class="col-12 col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    Uzupełnij podstawowe dane
+                </div>
+                <div class="card-body">
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'autocomplette' : 'off'}}) }}
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+{% endblock %}

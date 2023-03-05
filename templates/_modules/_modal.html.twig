@@ -1,0 +1,42 @@
+{% block javascripts_bottom %}
+    <script>
+        function modal(theObject) {
+            $.ajax({
+                type: "POST",
+                data: {'task': theObject},
+                dataType: 'json',
+                url: '{{ path(_path) }}',
+                async: false, //you won't need that if nothing in your following code is dependend of the result,
+                beforeSend: function (json) {
+                    $(".ajaxModal").modal('show');
+                },
+            })
+                .done(function (response) {
+
+                    $('.ajaxModal .modal-title').html(response.title);
+                    template = JSON.parse(response.template);
+                    $('.ajaxModal .modal-body').html(template); //Change the html of the div with the id = "your_div"
+
+                })
+                .fail(function (jqXHR, textStatus, errorThrown) {
+                    //  console.log(textStatus + jqXHR + errorThrown);
+                });
+        }
+    </script>
+{% endblock %}
+{% block after_body %}
+    <div class="modal ajaxModal fade"
+         aria-labelledby="modalEdit" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"></h5>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

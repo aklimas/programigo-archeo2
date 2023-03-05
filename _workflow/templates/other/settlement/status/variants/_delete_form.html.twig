@@ -1,0 +1,4 @@
+<form method="post" action="{{ path('settlementStatusVariants_delete', {'status': settlement_status.id, 'id': settlement_status_variants.id}) }}" onsubmit="return confirm('Czy jesteś pewny, że chcesz usunąć wpis?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ settlement_status_variants.id) }}">
+    <button class="btn btn-sm btn-danger">{% trans %}Usuń{% endtrans %}</button>
+</form>

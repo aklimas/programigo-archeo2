@@ -1,0 +1,51 @@
+{% extends 'panel.html.twig' %}
+{% block stylesheets %}{{ parent() }}
+    {{ block("stylesheets", "_modules/_comments.html.twig") }}
+    {{ block("stylesheets", "_modules/_fileinput.html.twig") }}
+{% endblock %}
+{% block javascripts_bottom %}{{ parent() }}
+    {{ block("javascripts_bottom", "_modules/_comments.html.twig") }}
+    {{ block("javascripts_bottom", "_modules/_fileinput.html.twig") }}
+
+    <script>
+        $(document).ready(function () {
+            $('div.comment-container').comment({
+                title: 'Liczba komentarzy:',
+                url_get: '{{ path('contactsList_getComments', {id: contactsList.id}) }}',
+                url_input: '{{ path('contactsList_addNewComment', {id: contactsList.id}) }}',
+                url_delete: '{{ path('contactsList_deleteComment', {id: contactsList.id}) }}',
+                limit: 10,
+                auto_refresh: false,
+                refresh: 10000,
+                transition: 'slideToggle',
+            });
+
+        });
+        $('#deleteCommentBtn').click(function () {
+            $.ajax({
+                url: '{{ path('contactsList_deleteComment', {id: contactsList.id}) }}',
+                data: {
+                    id: $('#deleteCommentBtn').attr('data-id'),
+                },
+                type: 'post',
+                success: function (json) {
+                    $('#posted-' + json).remove();
+                }
+            });
+        });
+    </script>
+{% endblock %}
+{% block body %} {{ parent() }}
+    <div class="row">
+        <div class="col-12 col-lg-6">
+            {% include 'other/contactsList/_form.html.twig' %}
+            {# TOTO Pliki {% include 'other/contactsList/_content/_files.html.twig' with {files: contactsList.file} %}#}
+            {% include 'other/contactsList/_delete_form.html.twig' %}
+        </div>
+        {# TOTO Komentarze i Historia<div class="col-12 col-lg-6">{% include "other/contactsList/_content/_comments.html.twig" %}
+            {% include "other/contactsList/_content/_history.html.twig" %}</div>#}
+    </div>
+
+
+
+{% endblock %}
