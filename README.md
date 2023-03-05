@@ -1,6 +1,13 @@
 # programigo-base
 
-###Start systemu poprzez:
+### Wymagania
+## PHP: >=8.1
+## Symfony 6.2
+
+# Baza podpięta
+
+
+###Start systemu poprzez (przy starciu projektu):
 
 composer install
 
