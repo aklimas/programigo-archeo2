@@ -55,7 +55,7 @@
                 {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                     {% include "_page/_content/_top/_profile.html.twig" %}
                 {% else %}
-                    <li><a class="nav-link scrollto active" href="{{ path('app_login') }}">Logowanie</a></li>
+                    <li><a class="nav-link scrollto active" href="{{ path('app_sign_in') }}">Logowanie</a></li>
                     <li><a class="nav-link scrollto active" href="{{ path('app_register') }}">Załóż konto</a></li>
                 {% endif %}
 

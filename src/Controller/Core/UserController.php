@@ -26,6 +26,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Validator\Constraints\File;
 
 class UserController extends AbstractController
@@ -238,6 +239,12 @@ class UserController extends AbstractController
             ],
             'form' => $form->createView(),
         ]);
+    }
+
+    #[Route('/moj-profil', name: 'user_profil')]
+    public function profil(Request $request, UserDataRepository $userDataRepository, UserPasswordHasherInterface $passwordEncoder, UserEmailRepository $userEmailRepository): Response
+    {
+        return $this->edit( $this->getUser(), $request,$userDataRepository, $passwordEncoder, $userEmailRepository);
     }
 
     #[Route('/uzytkownicy/edycja/{id}', name: 'user_edit')]

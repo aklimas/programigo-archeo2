@@ -5,6 +5,10 @@
 ## Symfony 6.2
 
 # Baza podpięta
+Instalacja:
+composer install
+symfony serve
+
 
 
 ###Start systemu poprzez (przy starciu projektu):

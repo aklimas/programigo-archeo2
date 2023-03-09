@@ -1,0 +1,38 @@
+
+<!-- ======= Breadcrumbs Section ======= -->
+<section class="breadcrumbs">
+    <div class="container">
+
+        <div class="d-flex justify-content-between align-items-center">
+            {% if header_title is defined and header_title != "" %} <h2 class="mb-0">{{ header_title }}</h2> {% endif %}
+            {% if breadcrumb is defined %}
+                <ol class="breadcrumb ">
+                    <li><a href="{{ path('home') }}" class="me-2"><i class="bi bi-house"></i></a></li>
+                    {% for name in breadcrumb %}
+                        {% for key, value in name %}
+                            {% if key != 'params' %}
+                                <li class="breadcrumb-item {% if key == "none" %} active "
+                                    aria-current="page {% endif %}">
+                                    {% if key!= 'none' and key!= 'params' %}
+                                        {% if name.params is defined %}
+                                            <a href="{{ path(key , name.params) }}"> {{ value }}</a>
+                                        {% else %}
+                                            <a href="{{ path(key) }}"> {{ value }}</a>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if name[key] is not iterable %}
+                                            {{ name[key] }}
+                                        {% endif %}
+                                    {% endif %}
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                </ol>
+            {% endif %}
+        </div>
+
+    </div>
+</section><!-- End Breadcrumbs Section -->
+
+
